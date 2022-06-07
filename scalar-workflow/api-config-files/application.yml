@@ -1,0 +1,41 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_Alhy1rYja
+  servlet:
+    multipart:
+      max-request-size: 500MB
+      max-file-size: 500MB
+
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        secure: true
+    context-path: /scalarworkflow
+
+scalardb:
+  keyspace: scalarworkflow
+
+company:
+  companyId: 7ca54612-f861-da94-d3bb-dc7b32fcd464
+
+encrypt:
+  key: fMFHRADJcxXTcbld
+
+app:
+  templateRootId: 156694796108
+  workflowRootId: 156699193326
+  workareaRootId: 156697766020
+
+
+storage:
+  box:
+    config: box-config.json
+
+springfox:
+  documentation:
+    enabled: false

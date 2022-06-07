@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-api-service
+  labels:
+    {{- include "scalar-workflow.api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: api-port
+      protocol: TCP
+      name: api-service-port
+  selector:
+    {{- include "scalar-workflow.api.selectorLabels" . | nindent 4 }}
