@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "scalar-workflow.fullname" . }}-api
+  name: {{ include "scalar-workflow-api.fullname" . }}
   labels:
-    {{- include "scalar-workflow.api.labels" . | nindent 4 }}
+    {{- include "scalar-workflow-api.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.api.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "scalar-workflow.api.selectorLabels" . | nindent 6 }}
+      {{- include "scalar-workflow-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "scalar-workflow.api.selectorLabels" . | nindent 8 }}
+        {{- include "scalar-workflow-api.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "scalar-workflow.serviceAccountName" . }}
+      serviceAccountName: {{ include "scalar-workflow-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           volumeMounts:
-          - name: {{ .Chart.Name }}-api-configmap-volume
+          - name: {{ .Chart.Name }}-configmap-volume
             mountPath: src/main/resources/
           ports:
             - name: api-port
@@ -43,9 +43,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: {{ .Chart.Name }}-api-configmap-volume
+        - name: {{ .Chart.Name }}-configmap-volume
           configMap:
-            name: {{ .Chart.Name }}-api-configmap
+            name: {{ .Chart.Name }}-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

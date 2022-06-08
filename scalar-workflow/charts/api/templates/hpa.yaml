@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "scalar-workflow.fullname" . }}
+  name: {{ include "scalar-workflow-api.fullname" . }}
   labels:
-    {{- include "scalar-workflow.labels" . | nindent 4 }}
+    {{- include "scalar-workflow-api.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "scalar-workflow.fullname" . }}
+    name: {{ include "scalar-workflow-api.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
