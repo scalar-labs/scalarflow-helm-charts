@@ -9,7 +9,7 @@ api:
     pullPolicy: IfNotPresent
     tag: 0.0.1
 
-  configMouthPath: src/main/resources/
+  configMouthPath: /src/main/resources/
   springBootProfile: production
   port: 8080
 
