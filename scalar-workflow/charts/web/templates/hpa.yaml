@@ -3,6 +3,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "scalar-workflow-web.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "scalar-workflow-web.labels" . | nindent 4 }}
 spec:

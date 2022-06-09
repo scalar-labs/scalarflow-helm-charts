@@ -15,7 +15,7 @@ web:
   wfApi: http://scalar-workflow-api-service:8080
 
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 9005
 
 
@@ -42,16 +42,16 @@ securityContext: {}
   # runAsUser: 1000
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
+  annotations: 
+    kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: localhost
+    - host: ""
       paths:
         - path: /
-          pathType: ImplementationSpecific
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

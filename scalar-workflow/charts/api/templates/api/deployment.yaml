@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "scalar-workflow-api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "scalar-workflow-api.labels" . | nindent 4 }}
 spec:
@@ -35,7 +36,7 @@ spec:
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           volumeMounts:
           - name: {{ .Chart.Name }}-configmap-volume
-            mountPath: src/main/resources/
+            mountPath: {{ .Values.api.configMouthPath}}
           ports:
             - name: api-port
               containerPort: {{ .Values.api.port }}
