@@ -4,7 +4,9 @@ metadata:
   name: {{ .Chart.Name }}-configmap
   namespace: {{ .Release.Namespace }}
 data:
-{{- range $path, $_ :=  .Files.Glob  "api-config-files/**" }}
-  {{ $path | base }}: |-
-{{ $.Files.Get $path | indent 4 }}
-{{- end }}
+  {{.Values.api.springBootConfig.name }}: |-
+{{ .Values.api.springBootConfig.data | indent 4 }}
+  {{.Values.api.boxConfig.name }}: |-
+{{ .Values.api.boxConfig.data | indent 4 }}
+  {{.Values.api.scalardbConfig.name }}: |-
+{{ .Values.api.scalardbConfig.data | indent 4 }}

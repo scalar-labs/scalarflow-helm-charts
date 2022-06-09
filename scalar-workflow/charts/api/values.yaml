@@ -17,6 +17,20 @@ api:
     type: ClusterIP
     port: 8080
 
+  springBootConfig:
+    name: application.yml
+    # file data which will be passed via --set-file flag when install the chart
+    data: ""
+
+  boxConfig:
+    name: box-config.json
+    # file data which will be passed via --set-file flag when install the chart
+    data: ""
+  
+  scalardbConfig:
+    name: scalardb-production.properties
+    # file data which will be passed via --set-file flag when install the chart
+    data: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
