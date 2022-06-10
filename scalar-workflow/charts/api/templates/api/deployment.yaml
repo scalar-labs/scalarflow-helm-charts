@@ -35,7 +35,7 @@ spec:
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           volumeMounts:
-          - name: {{ .Chart.Name }}-configmap-volume
+          - name: {{ .Chart.Name }}-secret-volume
             mountPath: {{ .Values.api.configMouthPath}}
           ports:
             - name: api-port
@@ -44,9 +44,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: {{ .Chart.Name }}-configmap-volume
-          configMap:
-            name: {{ .Chart.Name }}-configmap
+        - name: {{ .Chart.Name }}-secret-volume
+          secret:
+            secretName: {{ .Chart.Name }}-secret
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
