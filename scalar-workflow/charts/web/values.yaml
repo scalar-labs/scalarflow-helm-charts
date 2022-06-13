@@ -18,7 +18,8 @@ web:
     type: ClusterIP
     port: 9005
 
-imagePullSecrets: ""
+imagePullSecrets:
+  - name: regcred
 
 serviceAccount:
   # Specifies whether a service account should be created

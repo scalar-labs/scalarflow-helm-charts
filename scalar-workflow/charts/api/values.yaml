@@ -32,7 +32,8 @@ api:
     # file data which will be passed via --set-file flag when install the chart
     data: ""
 
-imagePullSecrets: ""
+imagePullSecrets:
+  - name: regcred
 
 serviceAccount:
   # Specifies whether a service account should be created
