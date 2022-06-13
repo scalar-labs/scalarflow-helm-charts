@@ -32,6 +32,8 @@ api:
     # file data which will be passed via --set-file flag when install the chart
     data: ""
 
+imagePullSecrets: ""
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

@@ -18,6 +18,7 @@ web:
     type: ClusterIP
     port: 9005
 
+imagePullSecrets: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
