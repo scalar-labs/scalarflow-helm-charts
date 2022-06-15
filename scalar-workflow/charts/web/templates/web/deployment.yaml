@@ -43,6 +43,14 @@ spec:
             value: {{ .Values.web.serverEnv }}
           - name: WF_API
             value: {{ .Values.web.wfApi }}
+          - name: AWS_PROJECT_REGION
+            value: {{ .Values.web.aws.awsProjectRegion }}
+          - name: AWS_COGNITO_REGION
+            value: {{ .Values.web.aws.awsCognitoRegion }}
+          - name: AWS_USER_POOLS_ID
+            value: {{ .Values.web.aws.awsUserPoolsId }}
+          - name: AWS_USER_POOLS_WEB_CLIENT_ID
+            value: {{ .Values.web.aws.awsUserPoolsWebClientId }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
