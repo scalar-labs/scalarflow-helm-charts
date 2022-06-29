@@ -52,7 +52,7 @@ spec:
           - name: AWS_USER_POOLS_WEB_CLIENT_ID
             value: {{ .Values.web.aws.awsUserPoolsWebClientId }}
           - name: ROOT_WORKAREA_ID
-            value: {{ .Values.web.storage.rootWorkareaId }}
+            value: {{ .Values.web.storage.rootWorkareaId | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
