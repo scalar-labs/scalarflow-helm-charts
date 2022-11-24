@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "scalar-workflow-schema-loader.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "scalar-workflow-schema-loader.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "scalar-workflow-schema-loader.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}-schema-loader-container
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.api.schemaLoader.image.repository }}:{{ .Values.api.schemaLoader.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.api.schemaLoader.image.pullPolicy }}
+          env:
+          - name: CONFIG_FILE
+            value: "{{ .Values.api.configMouthPath}}/{{.Values.api.scalardbConfig.name }}"
+          volumeMounts:
+          - name: {{ .Chart.Name }}-secret-volume
+            mountPath: {{ .Values.api.configMouthPath}}
+      volumes:
+        - name: {{ .Chart.Name }}-secret-volume
+          secret:
+            secretName: {{ .Chart.Name }}-secret
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

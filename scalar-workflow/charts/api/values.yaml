@@ -7,7 +7,13 @@ api:
   image:
     repository: ghcr.io/scalar-labs/scalar-workflow-api
     pullPolicy: IfNotPresent
-    tag: 0.0.1
+    tag: 1.4.0
+
+  schemaLoader:
+    image:
+      repository: ghcr.io/scalar-labs/scalar-workflow-schema-loader
+      pullPolicy: IfNotPresent
+      tag: 1.4.0
 
   configMouthPath: /src/main/resources/
   springBootProfile: production
