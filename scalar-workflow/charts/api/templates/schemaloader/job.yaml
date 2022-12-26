@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "scalar-workflow-schema-loader.labels" . | nindent 4 }}
 spec:
-  ttlSecondsAfterFinished: 60
+  {{- if .Values.api.schemaLoader.ttlSecondsAfterFinished.enabled }}
+  ttlSecondsAfterFinished: {{ .Values.api.schemaLoader.ttlSecondsAfterFinished.value }}
+  {{- end }}
   template:
     metadata:
       annotations:
