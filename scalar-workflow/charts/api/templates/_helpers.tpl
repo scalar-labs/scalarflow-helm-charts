@@ -33,7 +33,7 @@ If release name contains chart name it will be used as a full name.
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}-schema-loader
 {{- else }}
 {{- printf "%s-%s-schema-loader" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
