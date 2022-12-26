@@ -14,10 +14,8 @@ api:
       repository: ghcr.io/scalar-labs/scalar-workflow-schema-loader
       pullPolicy: IfNotPresent
       tag: 1.4.0
-    ttlSecondsAfterFinished:
-      # Enable this will clean the schema loader job after the job fiinished (either completted or failed)
-      enabled: true
-      value: 60
+    # This will clean the schema loader job after the job is finished (either completed or failed) after a set number of seconds. "0" means disable this feature (the job is not cleaned).
+    ttlSecondsAfterFinished: 60
 
   configMouthPath: /src/main/resources/
   springBootProfile: production
