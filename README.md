@@ -1,1 +1,1 @@
-Helm charts of Scalar Workflow project
+Helm chart for the ScalarFlow project
