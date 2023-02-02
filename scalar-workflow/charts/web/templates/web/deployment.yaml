@@ -53,6 +53,8 @@ spec:
             value: {{ .Values.web.aws.awsUserPoolsWebClientId }}
           - name: ROOT_WORKAREA_ID
             value: {{ .Values.web.storage.rootWorkareaId | quote }}
+          - name: AUTH_PROVIDER
+            value: {{ .Values.web.authProvider }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

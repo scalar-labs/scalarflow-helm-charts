@@ -13,6 +13,7 @@ web:
 
   serverEnv: local
   wfApi: http://scalar-workflow-api-service:8080
+  authProvider: cognito
 
   aws:
     awsProjectRegion: ""
