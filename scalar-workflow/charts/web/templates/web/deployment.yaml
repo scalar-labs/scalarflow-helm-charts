@@ -55,6 +55,8 @@ spec:
             value: {{ .Values.web.storage.rootWorkareaId | quote }}
           - name: AUTH_PROVIDER
             value: {{ .Values.web.authProvider }}
+          - name: SELF_SIGN_UP_ENABLED
+            value: {{ .Values.web.selfSignUpEnabled }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
