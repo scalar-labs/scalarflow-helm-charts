@@ -24,6 +24,7 @@ web:
 
   storage:
     rootWorkareaId: ""
+    storageType: ""
 
   service:
     type: ClusterIP
