@@ -39,24 +39,24 @@ spec:
               containerPort: {{ .Values.web.port }}
               protocol: TCP
           env:
-          - name: SERVER_ENV
-            value: {{ .Values.web.serverEnv }}
-          - name: WF_API
+          - name: SCALARFLOW_API_URL
             value: {{ .Values.web.wfApi }}
-          - name: AWS_PROJECT_REGION
+          - name: SCALARFLOW_WEB_AWS_PROJECT_REGION
             value: {{ .Values.web.aws.awsProjectRegion }}
-          - name: AWS_COGNITO_REGION
+          - name: SCALARFLOW_WEB_AWS_COGNITO_REGION
             value: {{ .Values.web.aws.awsCognitoRegion }}
-          - name: AWS_USER_POOLS_ID
+          - name: SCALARFLOW_WEB_AWS_USER_POOLS_ID
             value: {{ .Values.web.aws.awsUserPoolsId }}
-          - name: AWS_USER_POOLS_WEB_CLIENT_ID
+          - name: SCALARFLOW_WEB_AWS_USER_POOLS_WEB_CLIENT_ID
             value: {{ .Values.web.aws.awsUserPoolsWebClientId }}
-          - name: ROOT_WORKAREA_ID
+          - name: SCALARFLOW_WEB_ROOT_WORKAREA_ID
             value: {{ .Values.web.storage.rootWorkareaId | quote }}
-          - name: AUTH_PROVIDER
+          - name: SCALARFLOW_WEB_AUTH_PROVIDER
             value: {{ .Values.web.authProvider }}
-          - name: SELF_SIGN_UP_ENABLED
+          - name: SCALARFLOW_WEB_SELF_SIGN_UP_ENABLED
             value: {{ .Values.web.selfSignUpEnabled | quote  }}
+          - name: SCALARFLOW_WEB_STORAGE_TYPE
+            value: {{ .Values.web.storage.storageType | quote  }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
