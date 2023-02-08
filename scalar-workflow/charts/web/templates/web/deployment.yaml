@@ -54,7 +54,7 @@ spec:
           - name: SCALARFLOW_WEB_AUTH_PROVIDER
             value: {{ .Values.web.authProvider }}
           - name: SCALARFLOW_WEB_SELF_SIGN_UP_ENABLED
-            value: {{ .Values.web.selfSignUpEnabled | quote  }}
+            value: {{ .Values.web.selfSignUpEnabled | quote }}
           - name: SCALARFLOW_WEB_STORAGE_TYPE
             value: {{ .Values.web.storage.storageType | quote  }}
           resources:
