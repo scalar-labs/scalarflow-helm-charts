@@ -39,6 +39,8 @@ spec:
               containerPort: {{ .Values.web.port }}
               protocol: TCP
           env:
+          - name: SCALARFLOW_WEB_SERVER_PORT
+            value: {{ .Values.web.port | quote }}
           - name: SCALARFLOW_API_URL
             value: {{ .Values.web.wfApi }}
           - name: SCALARFLOW_WEB_AWS_PROJECT_REGION
