@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "scalar-workflow-web.fullname" . }}
+  name: {{ include "scalarflow-web.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalar-workflow-web.labels" . | nindent 4 }}
+    {{- include "scalarflow-web.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.web.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "scalar-workflow-web.selectorLabels" . | nindent 6 }}
+      {{- include "scalarflow-web.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,13 +19,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "scalar-workflow-web.selectorLabels" . | nindent 8 }}
+        {{- include "scalarflow-web.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "scalar-workflow-web.serviceAccountName" . }}
+      serviceAccountName: {{ include "scalarflow-web.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -42,7 +42,7 @@ spec:
           - name: SCALARFLOW_WEB_SERVER_PORT
             value: {{ .Values.web.port | quote }}
           - name: SCALARFLOW_API_URL
-            value: {{ .Values.web.wfApi }}
+            value: {{ .Values.web.scalarflowApiUrl }}
           - name: SCALARFLOW_WEB_AWS_PROJECT_REGION
             value: {{ .Values.web.aws.awsProjectRegion }}
           - name: SCALARFLOW_WEB_AWS_COGNITO_REGION

@@ -1,10 +1,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "scalar-workflow-schema-loader.fullname" . }}
+  name: {{ include "scalarflow-schema-loader.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalar-workflow-schema-loader.labels" . | nindent 4 }}
+    {{- include "scalarflow-schema-loader.labels" . | nindent 4 }}
 spec:
   {{- if .Values.api.schemaLoader.ttlSecondsAfterFinished }}
   ttlSecondsAfterFinished: {{ .Values.api.schemaLoader.ttlSecondsAfterFinished }}
@@ -16,7 +16,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "scalar-workflow-schema-loader.selectorLabels" . | nindent 8 }}
+        {{- include "scalarflow-schema-loader.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

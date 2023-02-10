@@ -1,6 +1,6 @@
 apiVersion: v2
-name: scalar-workflow-api
-description: A Helm chart for Scalar Workflow API
+name: scalarflow-api
+description: A Helm chart for ScalarFlow API
 
 # A chart can be either an 'application' or a 'library' chart.
 #

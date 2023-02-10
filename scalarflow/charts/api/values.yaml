@@ -1,21 +1,22 @@
-# Default values for scalar-workflow.
+# Default values for scalarflow.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 api:
   replicaCount: 1
   image:
-    repository: ghcr.io/scalar-labs/scalar-workflow-api
+    repository: ghcr.io/scalar-labs/scalarflow-api
     pullPolicy: IfNotPresent
-    tag: 1.4.0
+    tag: 1.0.0
 
   schemaLoader:
     image:
-      repository: ghcr.io/scalar-labs/scalar-workflow-schema-loader
+      repository: ghcr.io/scalar-labs/scalarflow-schema-loader
       pullPolicy: IfNotPresent
-      tag: 1.4.0
+      tag: 1.0.0
     # This will clean the schema loader job after the job is finished (either completed or failed) after a set number of seconds. "0" means disable this feature (the job is not cleaned).
     ttlSecondsAfterFinished: 60
+    # Arguments for the scalarflow schema loader
     args: []
 
   configMouthPath: /src/main/resources/
