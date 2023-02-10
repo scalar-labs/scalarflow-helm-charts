@@ -1,42 +1,49 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: {{ include "scalar-workflow-schema-loader.fullname" . }}
+  name: {{ include "scalarflow-api.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalar-workflow-schema-loader.labels" . | nindent 4 }}
+    {{- include "scalarflow-api.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.api.schemaLoader.ttlSecondsAfterFinished }}
-  ttlSecondsAfterFinished: {{ .Values.api.schemaLoader.ttlSecondsAfterFinished }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.api.replicaCount }}
   {{- end }}
+  selector:
+    matchLabels:
+      {{- include "scalarflow-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/api/secret.yaml") . | sha256sum }}
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "scalar-workflow-schema-loader.selectorLabels" . | nindent 8 }}
+        {{- include "scalarflow-api.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "scalarflow-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      restartPolicy: Never
       containers:
-        - name: {{ .Chart.Name }}-schema-loader-container
+        - name: {{ .Chart.Name }}-container
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.api.schemaLoader.image.repository }}:{{ .Values.api.schemaLoader.image.tag | default "latest" }}"
-          imagePullPolicy: {{ .Values.api.schemaLoader.image.pullPolicy }}
-          env:
-          - name: CONFIG_FILE
-            value: "{{ .Values.api.configMouthPath}}/{{.Values.api.scalardbConfig.name }}"
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           volumeMounts:
           - name: {{ .Chart.Name }}-secret-volume
             mountPath: {{ .Values.api.configMouthPath}}
+          ports:
+            - name: api-port
+              containerPort: {{ .Values.api.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: {{ .Chart.Name }}-secret-volume
           secret:

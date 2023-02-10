@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "scalar-workflow-api.fullname" . -}}
+{{- $fullName := include "scalarflow-web.fullname" . -}}
 {{- $svcName := printf "%s-service" (.Chart.Name) -}}
-{{- $svcPort := .Values.api.service.port -}}
+{{- $svcPort := .Values.web.service.port -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -19,7 +19,7 @@ metadata:
   name: {{ $fullName }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalar-workflow-api.labels" . | nindent 4 }}
+    {{- include "scalarflow-web.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-service
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalar-workflow-api.labels" . | nindent 4 }}
+    {{- include "scalarflow-api.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.api.service.type }}
   ports:
@@ -13,4 +13,4 @@ spec:
       protocol: TCP
       name: api-service-port
   selector:
-    {{- include "scalar-workflow-api.selectorLabels" . | nindent 4 }}
+    {{- include "scalarflow-api.selectorLabels" . | nindent 4 }}

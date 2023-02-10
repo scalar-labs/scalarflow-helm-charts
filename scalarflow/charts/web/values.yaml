@@ -1,18 +1,17 @@
-# Default values for scalar-workflow.
+# Default values for scalarflow.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 web:
   replicaCount: 1
   image:
-    repository: ghcr.io/scalar-labs/scalar-workflow-web
+    repository: ghcr.io/scalar-labs/scalarflow-web
     pullPolicy: IfNotPresent
     tag: 0.0.1
 
   port: 9005
 
-  serverEnv: local
-  wfApi: http://scalar-workflow-api-service:8080
+  scalarflowApiUrl: http://scalarflow-api-service:8080
   authProvider: cognito
   selfSignUpEnabled: false
 
