@@ -37,10 +37,12 @@ spec:
           volumeMounts:
           - name: {{ .Chart.Name }}-secret-volume
             mountPath: {{ .Values.api.configMouthPath}}
-          args:          
-          {{ range .Values.api.schemaLoader.args }}
+          {{- if .Values.api.schemaLoader.args }}
+          args:
+          {{- range .Values.api.schemaLoader.args }}
             - {{ . }}
-          {{ end }}
+          {{- end }}
+          {{- end }}
       volumes:
         - name: {{ .Chart.Name }}-secret-volume
           secret:
