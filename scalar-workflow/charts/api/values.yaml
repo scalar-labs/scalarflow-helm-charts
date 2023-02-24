@@ -19,7 +19,6 @@ api:
 
   configMouthPath: /src/main/resources/
   springBootProfile: production
-  port: 8080
 
   service:
     type: ClusterIP
@@ -30,15 +29,147 @@ api:
     # file data which will be passed via --set-file flag when install the chart
     data: ""
 
-  boxConfig:
-    name: box-config.json
-    # file data which will be passed via --set-file flag when install the chart
-    data: ""
-  
-  scalardbConfig:
-    name: scalardb-production.properties
-    # file data which will be passed via --set-file flag when install the chart
-    data: ""
+  spring:
+    security:
+      oauth2:
+        resourceServer:
+          jwt:
+            issuerUri: ""
+
+  server:
+    port: 8080
+
+  scalardb:
+    config: scalardb.properties
+    configData: ""
+
+  app:
+    storage:
+      templateRootFolderId: ""
+      workflowRootFolderId: ""
+      workareaRootFolderId: ""
+    url: ""
+    company:
+      companyId: ""
+      companyName: ""
+      companyDescription: ""
+    selfSignUp:
+      enabled: false
+      defaultPermissions: ""
+
+  storage:
+    box:
+      enabled: false
+      config: box-config.json
+      configData: ""
+      groupId: ""
+    jclouds:
+      enabled: false
+      container: ""
+      identity: ""
+      credential: ""
+      provider: AWS
+
+  springfox:
+    documentation:
+      enabled: false
+
+  sms:
+    twilio:
+      enabled: false
+      accountSid: ""
+      token: ""
+      phoneNumber: ""
+    awsSns:
+      enabled: false
+      accessKey: ""
+      secretKey: ""
+      region: "ap-northeast-1"
+    templates:
+      mfa:
+        body: ""
+
+  email:
+    from: ""
+    sendgrid:
+      enabled: false
+      apiKey: ""
+    awsSes:
+      enabled: false
+      accessKey: ""
+      secretKey: ""
+      region: "ap-northeast-1"
+    templates:
+      externalUserAccessRequest:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+      externalUserAccessTask:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+      verificationCode:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+      createdUser:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+      mfa:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+
+  crypto:
+    keyPair:
+      privateKey: ""
+      publicKey: ""
+
+  p2p:
+    enabled: false
+    thisPeerHost: ""
+    messageExpirationInSecs: 60
+
+  authentication:
+    providers:
+      staticJwt:
+        enabled: false
+      awsCognito:
+        enabled: false
+        accessKey: ""
+        secretKey: ""
+        region: "ap-northeast-1"
+        userPoolId: ""
+    mfa:
+      email:
+        enabled: false
+      sms:
+        enabled: false
+    password:
+      minCharacterLength: 8
+      numberRequired: true
+      upperCaseRequired: true
+      lowerCaseRequired: true
+      specialCharacterRequired: false
+    static-jwt:
+      secret: ""
+      expirationTimeMinutes: 60
+      issuerUri: ""
+      refreshTokenExpirationDays: 30
+    security:
+      forgotPasswordAttemptLimit: 3
+      forgotPasswordRetryMinutes: 5
+      failedAuthenticationAttemptLimit: 5
+      failedAuthenticationRetryMinutes: 5
+    verificationCode:
+      verificationCodeLength: 6
+      verificationCodeExpirationInMinutes: 5
 
 imagePullSecrets:
   - name: regcred
