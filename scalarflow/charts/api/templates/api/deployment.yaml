@@ -40,7 +40,7 @@ spec:
             mountPath: {{ .Values.api.configMouthPath}}
           ports:
             - name: api-port
-              containerPort: {{ .Values.api.port }}
+              containerPort: {{ .Values.api.server.port }}
               protocol: TCP
           env:
             - name: SPRING__SECURITY__OAUTH2__RESOURCESERVER__JWT__ISSUER_URI

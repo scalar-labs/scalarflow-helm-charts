@@ -21,7 +21,6 @@ api:
 
   configMouthPath: /src/main/resources/
   springBootProfile: production
-  port: 8080
 
   service:
     type: ClusterIP
