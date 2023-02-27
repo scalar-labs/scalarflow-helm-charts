@@ -52,9 +52,9 @@ api:
       workareaRootFolderId: ""
     url: ""
     company:
-      companyId: ""
-      companyName: ""
-      companyDescription: ""
+      id: ""
+      name: ""
+      description: ""
     selfSignUp:
       enabled: false
       defaultPermissions: ""
@@ -159,7 +159,7 @@ api:
       upperCaseRequired: true
       lowerCaseRequired: true
       specialCharacterRequired: false
-    static-jwt:
+    staticJwt:
       secret: ""
       expirationTimeMinutes: 60
       issuerUri: ""
