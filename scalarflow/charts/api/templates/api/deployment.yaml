@@ -35,190 +35,213 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
-          volumeMounts:
-          - name: {{ .Chart.Name }}-secret-volume
-            mountPath: {{ .Values.api.configMouthPath}}
           ports:
             - name: api-port
               containerPort: {{ .Values.api.server.port }}
               protocol: TCP
           env:
             - name: SPRING__SECURITY__OAUTH2__RESOURCESERVER__JWT__ISSUER_URI
-              value: { { .Values.api.spring.security.oauth2.resourceServer.jwt.issuerUri } }
+              value: {{ .Values.api.spring.security.oauth2.resourceServer.jwt.issuerUri | quote }}
             - name: SERVER__PORT
-              value: { { .Values.api.server.port } }
+              value: {{ .Values.api.server.port | quote }}
             - name: SCALARDB__CONFIG
-              value: { { .Values.api.scalardb.config } }
+              value: {{ .Values.api.scalardb.config | quote }}
             - name: APP__STORAGE__TEMPLATE_ROOT_FOLDER_ID
-              value: { { .Values.api.app.storage.templateRootFolderId } }
+              value: {{ .Values.api.app.storage.templateRootFolderId | quote }}
             - name: APP__STORAGE__WORKFLOW_ROOT_FOLDER_ID
-              value: { { .Values.api.app.storage.workflowRootFolderId } }
+              value: {{ .Values.api.app.storage.workflowRootFolderId | quote }}
             - name: APP__STORAGE__WORKAREA_ROOT_FOLDER_ID
-              value: { { .Values.api.app.storage.workareaRootFolderId } }
+              value: {{ .Values.api.app.storage.workareaRootFolderId | quote }}
             - name: APP__URL
-              value: { { .Values.api.app.url } }
+              value: {{ .Values.api.app.url | quote }}
             - name: APP__COMPANY_ID
-              value: { { .Values.api.company.id } }
+              value: {{ .Values.api.app.company.id | quote }}
             - name: APP__COMPANY_NAME
-              value: { { .Values.api.company.name } }
+              value: {{ .Values.api.app.company.name | quote }}
             - name: APP__COMPANY_DESCRIPTION
-              value: { { .Values.api.company.description } }
+              value: {{ .Values.api.app.company.description | quote }}
             - name: APP__SELF_SIGN_UP__ENABLED
-              value: { { .Values.api.app.selfSignUp.enabled } }
+              value: {{ .Values.api.app.selfSignUp.enabled | quote }}
             - name: APP__SELF_SIGN_UP__DEFAULT_PERMISSIONS
-              value: { { .Values.api.app.selfSignUp.defaultPermissions } }
+              value: {{ .Values.api.app.selfSignUp.defaultPermissions | quote }}
             - name: STORAGE__BOX__ENABLED
-              value: { { .Values.api.storage.box.enabled } }
+              value: {{ .Values.api.storage.box.enabled | quote }}
             - name: STORAGE__BOX__CONFIG
-              value: { { .Values.api.storage.box.config } }
+              value: {{ .Values.api.storage.box.config | quote }}
             - name: STORAGE__BOX__GROUP_ID
-              value: { { .Values.api.storage.box.groupId } }
+              value: {{ .Values.api.storage.box.groupId | quote }}
             - name: STORAGE__JCLOUDS__ENABLED
-              value: { { .Values.api.storage.jclouds.enabled } }
+              value: {{ .Values.api.storage.jclouds.enabled | quote }}
             - name: STORAGE__JCLOUDS__CONTAINER
-              value: { { .Values.api.storage.jclouds.container } }
+              value: {{ .Values.api.storage.jclouds.container | quote }}
             - name: STORAGE__JCLOUDS__IDENTITY
-              value: { { .Values.api.storage.jclouds.identity } }
+              value: {{ .Values.api.storage.jclouds.identity | quote }}
             - name: STORAGE__JCLOUDS__CREDENTIAL
-              value: { { .Values.api.storage.jclouds.credential } }
+              value: {{ .Values.api.storage.jclouds.credential | quote }}
             - name: STORAGE__JCLOUDS__PROVIDER
-              value: { { .Values.api.storage.jclouds.provider } }
+              value: {{ .Values.api.storage.jclouds.provider | quote }}
             - name: SPRINGFOX__DOCUMENTATION__ENABLED
-              value: { { .Values.api.springfox.documentation.enabled } }
+              value: {{ .Values.api.springfox.documentation.enabled | quote }}
             - name: SMS__TWILIO__ENABLED
-              value: { { .Values.api.sms.twilio.enabled } }
+              value: {{ .Values.api.sms.twilio.enabled | quote }}
             - name: SMS__TWILIO__ACCOUNT_SID
-              value: { { .Values.api.sms.twilio.accountSid } }
+              value: {{ .Values.api.sms.twilio.accountSid | quote }}
             - name: SMS__TWILIO__TOKEN
-              value: { { .Values.api.sms.twilio.token } }
+              value: {{ .Values.api.sms.twilio.token | quote }}
             - name: SMS__TWILIO__PHONE_NUMBER
-              value: { { .Values.api.sms.twilio.phoneNumber } }
+              value: {{ .Values.api.sms.twilio.phoneNumber | quote }}
             - name: SMS__AWS_SNS__ENABLED
-              value: { { .Values.api.sms.awsSns.enabled } }
+              value: {{ .Values.api.sms.awsSns.enabled | quote }}
             - name: SMS__AWS_SNS__ACCESS_KEY
-              value: { { .Values.api.sms.awsSns.accessKey } }
+              value: {{ .Values.api.sms.awsSns.accessKey | quote }}
             - name: SMS__AWS_SNS__SECRET_KEY
-              value: { { .Values.api.sms.awsSns.secretKey } }
+              value: {{ .Values.api.sms.awsSns.secretKey | quote }}
             - name: SMS__AWS_SNS__REGION
-              value: { { .Values.api.sms.awsSns.region } }
+              value: {{ .Values.api.sms.awsSns.region | quote }}
             - name: SMS__TEMPLATES__MFA__BODY
-              value: { { .Values.api.sms.templates.mfa.body } }
+              value: {{ .Values.api.sms.templates.mfa.body | quote }}
             - name: EMAIL__FROM
-              value: { { .Values.api.email.from } }
+              value: {{ .Values.api.email.from | quote }}
             - name: EMAIL__SENDGRID__ENABLED
-              value: { { .Values.api.email.sendgrid.enabled } }
+              value: {{ .Values.api.email.sendgrid.enabled | quote }}
             - name: EMAIL__SENDGRID__API_KEY
-              value: { { .Values.api.email.sendgrid.apiKey } }
+              value: {{ .Values.api.email.sendgrid.apiKey | quote }}
             - name: EMAIL__AWS_SES__ENABLED
-              value: { { .Values.api.email.awsSes.enabled } }
+              value: {{ .Values.api.email.awsSes.enabled | quote }}
             - name: EMAIL__AWS_SES__ACCESS_KEY
-              value: { { .Values.api.email.awsSes.accessKey } }
+              value: {{ .Values.api.email.awsSes.accessKey | quote }}
             - name: EMAIL__AWS_SES__SECRET_KEY
-              value: { { .Values.api.email.awsSes.secretKey } }
+              value: {{ .Values.api.email.awsSes.secretKey | quote }}
             - name: EMAIL__AWS_SES__REGION
-              value: { { .Values.api.email.awsSes.region } }
+              value: {{ .Values.api.email.awsSes.region | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__SUBJECT
-              value: { { .Values.api.email.templates.externalUserAccessRequest.subject } }
+              value: {{ .Values.api.email.templates.externalUserAccessRequest.subject | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__TEMPLATE_ID
-              value: { { .Values.api.email.templates.externalUserAccessRequest.templateId } }
+              value: {{ .Values.api.email.templates.externalUserAccessRequest.templateId | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__TEXT_BODY
-              value: { { .Values.api.email.templates.externalUserAccessRequest.textBody } }
+              value: {{ .Values.api.email.templates.externalUserAccessRequest.textBody | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__HTML_BODY
-              value: { { .Values.api.email.templates.externalUserAccessRequest.htmlBody } }
+              value: {{ .Values.api.email.templates.externalUserAccessRequest.htmlBody | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__SUBJECT
-              value: { { .Values.api.email.templates.externalUserAccessTask.subject } }
+              value: {{ .Values.api.email.templates.externalUserAccessTask.subject | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__TEMPLATE_ID
-              value: { { .Values.api.email.templates.externalUserAccessTask.templateId } }
+              value: {{ .Values.api.email.templates.externalUserAccessTask.templateId | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__TEXT_BODY
-              value: { { .Values.api.email.templates.externalUserAccessTask.textBody } }
+              value: {{ .Values.api.email.templates.externalUserAccessTask.textBody | quote }}
             - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__HTML_BODY
-              value: { { .Values.api.email.templates.externalUserAccessTask.htmlBody } }
+              value: {{ .Values.api.email.templates.externalUserAccessTask.htmlBody | quote }}
             - name: EMAIL__TEMPLATES__VERIFICATION_CODE__SUBJECT
-              value: { { .Values.api.email.templates.verificationCode.subject } }
+              value: {{ .Values.api.email.templates.verificationCode.subject | quote }}
             - name: EMAIL__TEMPLATES__VERIFICATION_CODE__TEMPLATE_ID
-              value: { { .Values.api.email.templates.verificationCode.templateId } }
+              value: {{ .Values.api.email.templates.verificationCode.templateId | quote }}
             - name: EMAIL__TEMPLATES__VERIFICATION_CODE__TEXT_BODY
-              value: { { .Values.api.email.templates.verificationCode.textBody } }
+              value: {{ .Values.api.email.templates.verificationCode.textBody | quote }}
             - name: EMAIL__TEMPLATES__VERIFICATION_CODE__HTML_BODY
-              value: { { .Values.api.email.templates.verificationCode.htmlBody } }
+              value: {{ .Values.api.email.templates.verificationCode.htmlBody | quote }}
             - name: EMAIL__TEMPLATES__CREATED_USER__SUBJECT
-              value: { { .Values.api.email.templates.createdUser.subject } }
+              value: {{ .Values.api.email.templates.createdUser.subject | quote }}
             - name: EMAIL__TEMPLATES__CREATED_USER__TEMPLATE_ID
-              value: { { .Values.api.email.templates.createdUser.templateId } }
+              value: {{ .Values.api.email.templates.createdUser.templateId | quote }}
             - name: EMAIL__TEMPLATES__CREATED_USER__TEXT_BODY
-              value: { { .Values.api.email.templates.createdUser.textBody } }
+              value: {{ .Values.api.email.templates.createdUser.textBody | quote }}
             - name: EMAIL__TEMPLATES__CREATED_USER__HTML_BODY
-              value: { { .Values.api.email.templates.createdUser.htmlBody } }
+              value: {{ .Values.api.email.templates.createdUser.htmlBody | quote }}
             - name: EMAIL__TEMPLATES__MFA__SUBJECT
-              value: { { .Values.api.email.templates.mfa.subject } }
+              value: {{ .Values.api.email.templates.mfa.subject | quote }}
             - name: EMAIL__TEMPLATES__MFA__TEMPLATE_ID
-              value: { { .Values.api.email.templates.mfa.templateId } }
+              value: {{ .Values.api.email.templates.mfa.templateId | quote }}
             - name: EMAIL__TEMPLATES__MFA__TEXT_BODY
-              value: { { .Values.api.email.templates.mfa.textBody } }
+              value: {{ .Values.api.email.templates.mfa.textBody | quote }}
             - name: EMAIL__TEMPLATES__MFA__HTML_BODY
-              value: { { .Values.api.email.templates.mfa.htmlBody } }
+              value: {{ .Values.api.email.templates.mfa.htmlBody | quote }}
             - name: CRYPTO__KEY_PAIR__PRIVATE_KEY
-              value: { { .Values.api.crypto.keyPair.privateKey } }
+              value: {{ .Values.api.crypto.keyPair.privateKey | quote }}
             - name: CRYPTO__KEY_PAIR__PUBLIC_KEY
-              value: { { .Values.api.crypto.keyPair.publicKey } }
+              value: {{ .Values.api.crypto.keyPair.publicKey | quote }}
             - name: P2P__ENABLED
-              value: { { .Values.api.p2p.enabled } }
+              value: {{ .Values.api.p2p.enabled | quote }}
             - name: P2P__THIS_PEER_HOST
-              value: { { .Values.api.p2p.thisPeerHost } }
+              value: {{ .Values.api.p2p.thisPeerHost | quote }}
             - name: P2P__MESSAGE_EXPIRATION_IN_SECS
-              value: { { .Values.api.p2p.messageExpirationInSecs } }
+              value: {{ .Values.api.p2p.messageExpirationInSecs | quote }}
             - name: AUTHENTICATION__PROVIDERS__STATIC_JWT__ENABLED
-              value: { { .Values.api.authentication.providers.staticJwt.enabled } }
+              value: {{ .Values.api.authentication.providers.staticJwt.enabled | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__ENABLED
-              value: { { .Values.api.authentication.providers.awsCognito.enabled } }
+              value: {{ .Values.api.authentication.providers.awsCognito.enabled | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__ACCESS_KEY
-              value: { { .Values.api.authentication.providers.awsCognito.accessKey } }
+              value: {{ .Values.api.authentication.providers.awsCognito.accessKey | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__SECRET_KEY
-              value: { { .Values.api.authentication.providers.awsCognito.secretKey } }
+              value: {{ .Values.api.authentication.providers.awsCognito.secretKey | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__REGION
-              value: { { .Values.api.authentication.providers.awsCognito.region } }
+              value: {{ .Values.api.authentication.providers.awsCognito.region | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_ID
-              value: { { .Values.api.authentication.providers.awsCognito.userPoolId } }
+              value: {{ .Values.api.authentication.providers.awsCognito.userPoolId | quote }}
             - name: AUTHENTICATION__MFA__EMAIL__ENABLED
-              value: { { .Values.api.authentication.mfa.email.enabled } }
+              value: {{ .Values.api.authentication.mfa.email.enabled | quote }}
             - name: AUTHENTICATION__MFA__SMS__ENABLED
-              value: { { .Values.api.authentication.mfa.sms.enabled } }
+              value: {{ .Values.api.authentication.mfa.sms.enabled | quote }}
             - name: AUTHENTICATION__PASSWORD__MIN_CHARACTER_LENGTH
-              value: { { .Values.api.authentication.password.minCharacterLength } }
+              value: {{ .Values.api.authentication.password.minCharacterLength | quote }}
             - name: AUTHENTICATION__PASSWORD__NUMBER_REQUIRED
-              value: { { .Values.api.authentication.password.numberRequired } }
+              value: {{ .Values.api.authentication.password.numberRequired | quote }}
             - name: AUTHENTICATION__PASSWORD__UPPER_CASE_REQUIRED
-              value: { { .Values.api.authentication.password.upperCaseRequired } }
+              value: {{ .Values.api.authentication.password.upperCaseRequired | quote }}
             - name: AUTHENTICATION__PASSWORD__LOWER_CASE_REQUIRED
-              value: { { .Values.api.authentication.password.lowerCaseRequired } }
+              value: {{ .Values.api.authentication.password.lowerCaseRequired | quote }}
             - name: AUTHENTICATION__PASSWORD__SPECIAL_CHARACTER_REQUIRED
-              value: { { .Values.api.authentication.password.specialCharacterRequired } }
+              value: {{ .Values.api.authentication.password.specialCharacterRequired | quote }}
             - name: AUTHENTICATION__STATIC_JWT__SECRET
-              value: { { .Values.api.authentication.staticJwt.secret } }
+              value: {{ .Values.api.authentication.staticJwt.secret | quote }}
             - name: AUTHENTICATION__STATIC_JWT__EXPIRATION_TIME_MINUTES
-              value: { { .Values.api.authentication.staticJwt.expirationTimeMinutes } }
+              value: {{ .Values.api.authentication.staticJwt.expirationTimeMinutes | quote }}
             - name: AUTHENTICATION__STATIC_JWT__ISSUER_URI
-              value: { { .Values.api.authentication.staticJwt.issuerUri } }
+              value: {{ .Values.api.authentication.staticJwt.issuerUri | quote }}
             - name: AUTHENTICATION__STATIC_JWT__REFRESH_TOKEN_EXPIRATION_DAYS
-              value: { { .Values.api.authentication.staticJwt.refreshTokenExpirationDays } }
+              value: {{ .Values.api.authentication.staticJwt.refreshTokenExpirationDays | quote }}
             - name: AUTHENTICATION__SECURITY__FORGOT_PASSWORD_ATTEMPT_LIMIT
-              value: { { .Values.api.authentication.security.forgotPasswordAttemptLimit } }
+              value: {{ .Values.api.authentication.security.forgotPasswordAttemptLimit | quote }}
             - name: AUTHENTICATION__SECURITY__FORGOT_PASSWORD_RETRY_MINUTES
-              value: { { .Values.api.authentication.security.forgotPasswordRetryMinutes } }
+              value: {{ .Values.api.authentication.security.forgotPasswordRetryMinutes | quote }}
             - name: AUTHENTICATION__SECURITY__FAILED_AUTHENTICATION_ATTEMPT_LIMIT
-              value: { { .Values.api.authentication.security.failedAuthenticationAttemptLimit } }
+              value: {{ .Values.api.authentication.security.failedAuthenticationAttemptLimit | quote }}
             - name: AUTHENTICATION__SECURITY__FAILED_AUTHENTICATION_RETRY_MINUTES
-              value: { { .Values.api.authentication.security.failedAuthenticationRetryMinutes } }
+              value: {{ .Values.api.authentication.security.failedAuthenticationRetryMinutes | quote }}
             - name: AUTHENTICATION__VERIFICATION_CODE__VERIFICATION_CODE_LENGTH
-              value: { { .Values.api.authentication.verificationCode.verificationCodeLength } }
+              value: {{ .Values.api.authentication.verificationCode.verificationCodeLength | quote }}
             - name: AUTHENTICATION__VERIFICATION_CODE__VERIFICATION_CODE_EXPIRATION_IN_MINUTES
-              value: { { .Values.api.authentication.verificationCode.verificationCodeExpirationInMinutes } }
+              value: {{ .Values.api.authentication.verificationCode.verificationCodeExpirationInMinutes | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+          volumeMounts:
+          {{- if .Values.api.springBootConfig.data }}
+          - name: {{ .Chart.Name }}-secret-volume
+            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.springBootConfig.name }}"
+            subPath: {{ .Values.api.springBootConfig.name }}
+          {{- end }}
+          {{- if .Values.api.storage.box.configData }}
+          - name: {{ .Chart.Name }}-secret-volume
+            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.storage.box.config }}"
+            subPath: {{ .Values.api.storage.box.config }}
+          {{- end }}
+          - name: {{ .Chart.Name }}-secret-volume
+            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
+            subPath: {{ .Values.api.scalardb.config }}
       volumes:
         - name: {{ .Chart.Name }}-secret-volume
           secret:
             secretName: {{ .Chart.Name }}-secret
+            items:
+            {{- if .Values.api.springBootConfig.data }}
+            - key: {{ .Values.api.springBootConfig.name }}
+              path:  {{ .Values.api.springBootConfig.name }}
+            {{- end }}
+            {{- if .Values.api.storage.box.configData }}
+            - key: {{ .Values.api.storage.box.config }}
+              path:  {{ .Values.api.storage.box.config }}
+            {{- end }}
+            - key: {{ .Values.api.scalardb.config }}
+              path:  {{ .Values.api.scalardb.config }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

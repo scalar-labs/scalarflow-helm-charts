@@ -33,10 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.api.schemaLoader.image.pullPolicy }}
           env:
           - name: CONFIG_FILE
-            value: "{{ .Values.api.configMouthPath}}/{{.Values.api.scalardbConfig.name }}"
+            value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
           volumeMounts:
           - name: {{ .Chart.Name }}-secret-volume
-            mountPath: {{ .Values.api.configMouthPath}}
+            mountPath: {{ .Values.api.configMouthPath }}
           {{- if .Values.api.schemaLoader.args }}
           args:
           {{- range .Values.api.schemaLoader.args }}
