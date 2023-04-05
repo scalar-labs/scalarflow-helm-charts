@@ -19,7 +19,7 @@ api:
     # Arguments for the scalarflow schema loader
     args: []
 
-  configMouthPath: /src/main/resources/
+  configMouthPath: /scalarflow
   springBootProfile: production
 
   service:
@@ -58,6 +58,12 @@ api:
     selfSignUp:
       enabled: false
       defaultPermissions: ""
+    templatePath: /scalarflow/templates/
+    adminUser:
+      email: ""
+      password: ""
+      firstName: "ScalarFlow"
+      lastName: "Admin"
 
   storage:
     box:
@@ -148,6 +154,7 @@ api:
         secretKey: ""
         region: "ap-northeast-1"
         userPoolId: ""
+        clientId: ""
     mfa:
       email:
         enabled: false

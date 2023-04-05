@@ -44,8 +44,10 @@ spec:
               value: {{ .Values.api.spring.security.oauth2.resourceServer.jwt.issuerUri | quote }}
             - name: SERVER__PORT
               value: {{ .Values.api.server.port | quote }}
+            {{- if .Values.api.scalardb.configData }}
             - name: SCALARDB__CONFIG
-              value: {{ .Values.api.scalardb.config | quote }}
+              value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
+            {{- end }}
             - name: APP__STORAGE__TEMPLATE_ROOT_FOLDER_ID
               value: {{ .Values.api.app.storage.templateRootFolderId | quote }}
             - name: APP__STORAGE__WORKFLOW_ROOT_FOLDER_ID
@@ -64,10 +66,22 @@ spec:
               value: {{ .Values.api.app.selfSignUp.enabled | quote }}
             - name: APP__SELF_SIGN_UP__DEFAULT_PERMISSIONS
               value: {{ .Values.api.app.selfSignUp.defaultPermissions | quote }}
+            - name: APP__TEMPLATE_PATH
+              value: {{ .Values.api.app.templatePath | quote }}
+            - name: APP__ADMIN_USER__EMAIL
+              value: {{ .Values.api.app.adminUser.email | quote }}
+            - name: APP__ADMIN_USER__PASSWORD
+              value: {{ .Values.api.app.adminUser.password | quote }}
+            - name: APP__ADMIN_USER__FIRST_NAME
+              value: {{ .Values.api.app.adminUser.firstName | quote }}
+            - name: APP__ADMIN_USER__LAST_NAME
+              value: {{ .Values.api.app.adminUser.lastName | quote }}
             - name: STORAGE__BOX__ENABLED
               value: {{ .Values.api.storage.box.enabled | quote }}
+            {{- if .Values.api.storage.box.configData }}
             - name: STORAGE__BOX__CONFIG
-              value: {{ .Values.api.storage.box.config | quote }}
+              value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.storage.box.config }}"
+            {{- end }}
             - name: STORAGE__BOX__GROUP_ID
               value: {{ .Values.api.storage.box.groupId | quote }}
             - name: STORAGE__JCLOUDS__ENABLED
@@ -176,6 +190,8 @@ spec:
               value: {{ .Values.api.authentication.providers.awsCognito.region | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_ID
               value: {{ .Values.api.authentication.providers.awsCognito.userPoolId | quote }}
+            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_CLIENT_ID
+              value: {{ .Values.api.authentication.providers.awsCognito.clientId | quote }}
             - name: AUTHENTICATION__MFA__EMAIL__ENABLED
               value: {{ .Values.api.authentication.mfa.email.enabled | quote }}
             - name: AUTHENTICATION__MFA__SMS__ENABLED
@@ -224,9 +240,11 @@ spec:
             mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.storage.box.config }}"
             subPath: {{ .Values.api.storage.box.config }}
           {{- end }}
+          {{- if .Values.api.scalardb.configData }}
           - name: {{ .Chart.Name }}-secret-volume
             mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
             subPath: {{ .Values.api.scalardb.config }}
+          {{- end }}
       volumes:
         - name: {{ .Chart.Name }}-secret-volume
           secret:
@@ -240,8 +258,10 @@ spec:
             - key: {{ .Values.api.storage.box.config }}
               path:  {{ .Values.api.storage.box.config }}
             {{- end }}
+            {{- if .Values.api.scalardb.configData }}
             - key: {{ .Values.api.scalardb.config }}
               path:  {{ .Values.api.scalardb.config }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
