@@ -192,6 +192,26 @@ spec:
               value: {{ .Values.api.authentication.providers.awsCognito.userPoolId | quote }}
             - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_CLIENT_ID
               value: {{ .Values.api.authentication.providers.awsCognito.clientId | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__ENABLED
+              value: {{ .Values.api.authentication.providers.oauth2.google.enabled | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__AUTH_URI
+              value: {{ .Values.api.authentication.providers.oauth2.google.authUri | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__REDIRECT_URI
+              value: {{ .Values.api.authentication.providers.oauth2.google.redirectUri | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_ID
+              value: {{ .Values.api.authentication.providers.oauth2.google.clientId | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_SECRET
+              value: {{ .Values.api.authentication.providers.oauth2.google.clientSecret | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__ENABLED
+              value: {{ .Values.api.authentication.providers.oauth2.box.enabled | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__AUTH_URI
+              value: {{ .Values.api.authentication.providers.oauth2.box.authUri | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__REDIRECT_URI
+              value: {{ .Values.api.authentication.providers.oauth2.box.redirectUri | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_ID
+              value: {{ .Values.api.authentication.providers.oauth2.box.clientId | quote }}
+            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_SECRET
+              value: {{ .Values.api.authentication.providers.oauth2.box.clientSecret | quote }}
             - name: AUTHENTICATION__MFA__EMAIL__ENABLED
               value: {{ .Values.api.authentication.mfa.email.enabled | quote }}
             - name: AUTHENTICATION__MFA__SMS__ENABLED
