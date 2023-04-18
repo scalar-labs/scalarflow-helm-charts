@@ -43,22 +43,6 @@ spec:
             value: {{ .Values.web.port | quote }}
           - name: SCALARFLOW_API_URL
             value: {{ .Values.web.scalarflowApiUrl | quote }}
-          - name: SCALARFLOW_WEB_AWS_PROJECT_REGION
-            value: {{ .Values.web.aws.awsProjectRegion | quote }}
-          - name: SCALARFLOW_WEB_AWS_COGNITO_REGION
-            value: {{ .Values.web.aws.awsCognitoRegion | quote }}
-          - name: SCALARFLOW_WEB_AWS_USER_POOLS_ID
-            value: {{ .Values.web.aws.awsUserPoolsId | quote }}
-          - name: SCALARFLOW_WEB_AWS_USER_POOLS_WEB_CLIENT_ID
-            value: {{ .Values.web.aws.awsUserPoolsWebClientId | quote }}
-          - name: SCALARFLOW_WEB_ROOT_WORKAREA_ID
-            value: {{ .Values.web.storage.rootWorkareaId | quote }}
-          - name: SCALARFLOW_WEB_AUTH_PROVIDER
-            value: {{ .Values.web.authProvider | quote }}
-          - name: SCALARFLOW_WEB_SELF_SIGN_UP_ENABLED
-            value: {{ .Values.web.selfSignUpEnabled | quote }}
-          - name: SCALARFLOW_WEB_STORAGE_TYPE
-            value: {{ .Values.web.storage.storageType | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
