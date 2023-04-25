@@ -7,23 +7,11 @@ web:
   image:
     repository: ghcr.io/scalar-labs/scalarflow-web
     pullPolicy: IfNotPresent
-    tag: 0.0.1
+    tag: 1.0.0
 
   port: 9005
 
   scalarflowApiUrl: http://scalarflow-api-service:8080
-  authProvider: cognito
-  selfSignUpEnabled: false
-
-  aws:
-    awsProjectRegion: ""
-    awsCognitoRegion: ""
-    awsUserPoolsId: ""
-    awsUserPoolsWebClientId: ""
-
-  storage:
-    rootWorkareaId: ""
-    storageType: ""
 
   service:
     type: ClusterIP
