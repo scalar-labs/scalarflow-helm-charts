@@ -32,11 +32,23 @@ spec:
           image: "{{ .Values.api.schemaLoader.image.repository }}:{{ .Values.api.schemaLoader.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.api.schemaLoader.image.pullPolicy }}
           env:
-          - name: CONFIG_FILE
-            value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
+            {{- if .Values.api.scalardb.configData }}
+            - name: CONFIG_FILE
+              value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
+            {{- end }}
+            - name: SCALAR_DB_CONTACT_POINTS
+              value: {{ .Values.api.scalardb.contactPoints | quote }}
+            - name: SCALAR_DB_CONTACT_PORT
+              value: {{ .Values.api.scalardb.contactPort | quote }}
+            - name: SCALAR_DB_STORAGE
+              value: {{ .Values.api.scalardb.storage | quote }}
+            - name: SCALAR_DB_TRANSACTION_MANAGER
+              value: {{ .Values.api.scalardb.transactionManager | quote }}
           volumeMounts:
-          - name: {{ .Chart.Name }}-secret-volume
-            mountPath: {{ .Values.api.configMouthPath }}
+            {{- if .Values.api.scalardb.configData }}
+            - name: {{ .Chart.Name }}-secret-volume
+              mountPath: {{ .Values.api.configMouthPath }}
+            {{- end }}
           {{- if .Values.api.schemaLoader.args }}
           args:
           {{- range .Values.api.schemaLoader.args }}
@@ -44,9 +56,11 @@ spec:
           {{- end }}
           {{- end }}
       volumes:
+        {{- if .Values.api.scalardb.configData }}
         - name: {{ .Chart.Name }}-secret-volume
           secret:
             secretName: {{ .Chart.Name }}-secret
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

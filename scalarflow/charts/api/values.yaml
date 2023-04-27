@@ -44,6 +44,12 @@ api:
   scalardb:
     config: scalardb.properties
     configData: ""
+    # In the case the properties file is not used, then the configuration can be done via bellow configs
+    namespace: scalarflow
+    contactPoint: "scalardb-server-envoy"
+    contactPort: 60051
+    storage: grpc
+    transactionManager: grpc
 
   app:
     storage:
@@ -71,6 +77,13 @@ api:
       config: box-config.json
       configData: ""
       groupId: ""
+      # In the case the config file is not used, please using bellow configs
+      clientId: ""
+      clientSecret: ""
+      publicKeyId: ""
+      privateKey: ""
+      passphrase: ""
+      enterpriseId: ""
     jclouds:
       enabled: false
       container: ""

@@ -48,6 +48,12 @@ spec:
             - name: SCALARDB__CONFIG
               value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
             {{- end }}
+            - name: SCALARDB__NAMESPACE
+              value: {{ .Values.api.scalardb.namespace | quote }}
+            - name: SCALARDB__CONTACT_POINTS
+              value: {{ .Values.api.scalardb.contactPoints | quote }}
+            - name: SCALARDB__CONTACT_PORT
+              value: {{ .Values.api.scalardb.contactPort | quote }}
             - name: APP__STORAGE__TEMPLATE_ROOT_FOLDER_ID
               value: {{ .Values.api.app.storage.templateRootFolderId | quote }}
             - name: APP__STORAGE__WORKFLOW_ROOT_FOLDER_ID
@@ -89,6 +95,33 @@ spec:
             {{- end }}
             - name: STORAGE__BOX__GROUP_ID
               value: {{ .Values.api.storage.box.groupId | quote }}
+            - name: STORAGE__BOX__CLIENT_ID
+              value: {{ .Values.api.storage.box.clientId | quote }}
+            {{- if .Values.api.storage.box.clientSecret }}
+            - name: STORAGE__BOX__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__BOX__CLIENT_SECRET
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: STORAGE__BOX__PUBLIC_KEY_ID
+              value: {{ .Values.api.storage.box.publicKeyId | quote }}
+            {{- if .Values.api.storage.box.privateKey }}
+            - name: STORAGE__BOX__PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__BOX__PRIVATE_KEY
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.api.storage.box.passphrase }}
+            - name: STORAGE__BOX__PASSPHRASE
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__BOX__PASSPHRASE
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: STORAGE__BOX__ENTERPRISE_ID
+              value: {{ .Values.api.storage.box.enterpriseId | quote }}
             - name: STORAGE__JCLOUDS__ENABLED
               value: {{ .Values.api.storage.jclouds.enabled | quote }}
             - name: STORAGE__JCLOUDS__CONTAINER
