@@ -87,6 +87,8 @@ spec:
               value: {{ .Values.api.app.adminUser.firstName | quote }}
             - name: APP__ADMIN_USER__LAST_NAME
               value: {{ .Values.api.app.adminUser.lastName | quote }}
+            - name: APP__ADMIN_USER__PHONE_NUMBER
+              value: {{ .Values.api.app.adminUser.phoneNumber | quote }}
             - name: STORAGE__BOX__ENABLED
               value: {{ .Values.api.storage.box.enabled | quote }}
             {{- if .Values.api.storage.box.configData }}
