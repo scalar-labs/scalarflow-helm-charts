@@ -144,8 +144,8 @@ spec:
             {{- end }}
             - name: STORAGE__JCLOUDS__PROVIDER
               value: {{ .Values.api.storage.jclouds.provider | quote }}
-            - name: SPRINGFOX__DOCUMENTATION__ENABLED
-              value: {{ .Values.api.springfox.documentation.enabled | quote }}
+            - name: SPRINGDOC__DOCUMENTATION__ENABLED
+              value: {{ .Values.api.springdoc.documentation.enabled | quote }}
             - name: SMS__TWILIO__ENABLED
               value: {{ .Values.api.sms.twilio.enabled | quote }}
             - name: SMS__TWILIO__ACCOUNT_SID
