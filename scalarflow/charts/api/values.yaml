@@ -92,7 +92,7 @@ api:
       credential: ""
       provider: AWS
 
-  springfox:
+  springdoc:
     documentation:
       enabled: false
 
