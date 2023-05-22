@@ -317,6 +317,8 @@ spec:
                   key: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_SECRET
                   name: {{ .Chart.Name }}-secret
             {{- end }}
+            - name: AUTHENTICATION__MFA__REQUIRED
+              value: {{ .Values.api.authentication.mfa.required | quote }}
             - name: AUTHENTICATION__MFA__EMAIL__ENABLED
               value: {{ .Values.api.authentication.mfa.email.enabled | quote }}
             - name: AUTHENTICATION__MFA__SMS__ENABLED
