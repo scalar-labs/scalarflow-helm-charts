@@ -356,6 +356,14 @@ spec:
               value: {{ .Values.api.authentication.verificationCode.verificationCodeLength | quote }}
             - name: AUTHENTICATION__VERIFICATION_CODE__VERIFICATION_CODE_EXPIRATION_IN_MINUTES
               value: {{ .Values.api.authentication.verificationCode.verificationCodeExpirationInMinutes | quote }}
+            - name: SENTRY__DSN
+              value: {{ .Values.api.sentry.dsn | quote }}
+            - name: SENTRY__DEBUG
+              value:  {{ .Values.api.sentry.debug | quote }}
+            - name: SENTRY__TRACES_SAMPLE_RATE
+              value: {{ .Values.api.sentry.tracesSampleRate | quote }}
+            - name: SENTRY__ENVIRONMENT
+              value: {{ .Values.api.sentry.environment | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 

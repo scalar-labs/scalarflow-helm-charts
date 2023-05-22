@@ -207,6 +207,12 @@ api:
       verificationCodeLength: 6
       verificationCodeExpirationInMinutes: 5
 
+  sentry:
+    dsn: ""
+    debug: false
+    tracesSampleRate: 1.0
+    environment: "production"
+
 imagePullSecrets:
   - name: regcred
 
