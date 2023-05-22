@@ -183,6 +183,7 @@ api:
           clientId: ""
           clientSecret: ""
     mfa:
+      required: false
       email:
         enabled: false
       sms:
