@@ -364,6 +364,8 @@ spec:
               value: {{ .Values.api.sentry.tracesSampleRate | quote }}
             - name: SENTRY__ENVIRONMENT
               value: {{ .Values.api.sentry.environment | quote }}
+            - name: SENTRY__RELEASE
+              value: {{ .Values.api.sentry.release | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
