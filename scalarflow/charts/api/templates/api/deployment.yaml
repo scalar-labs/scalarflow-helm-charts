@@ -54,6 +54,19 @@ spec:
               value: {{ .Values.api.scalardb.contactPoints | quote }}
             - name: SCALARDB__CONTACT_PORT
               value: {{ .Values.api.scalardb.contactPort | quote }}
+            - name: SCALARDB__USERNAME
+              value: {{ .Values.api.scalardb.username | quote }}
+            {{- if .Values.api.scalardb.password }}
+            - name: SCALARDB__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SCALARDB__PASSWORD
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: SCALARDB__STORAGE
+              value: {{ .Values.api.scalardb.storage | quote }}
+            - name: SCALARDB__TRANSACTION_MANANGER
+              value: {{ .Values.api.scalardb.transactionManager | quote }}
             - name: APP__STORAGE__TEMPLATE_ROOT_FOLDER_ID
               value: {{ .Values.api.app.storage.templateRootFolderId | quote }}
             - name: APP__STORAGE__WORKFLOW_ROOT_FOLDER_ID

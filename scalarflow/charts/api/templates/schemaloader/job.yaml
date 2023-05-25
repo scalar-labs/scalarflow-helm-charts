@@ -40,6 +40,15 @@ spec:
               value: {{ .Values.api.scalardb.contactPoints | quote }}
             - name: SCALAR_DB_CONTACT_PORT
               value: {{ .Values.api.scalardb.contactPort | quote }}
+            - name: SCALARDB__USERNAME
+              value: {{ .Values.api.scalardb.username | quote }}
+            {{- if .Values.api.scalardb.password }}
+            - name: SCALARDB__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SCALARDB__PASSWORD
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
             - name: SCALAR_DB_STORAGE
               value: {{ .Values.api.scalardb.storage | quote }}
             - name: SCALAR_DB_TRANSACTION_MANAGER
