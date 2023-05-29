@@ -40,8 +40,13 @@ spec:
               value: {{ .Values.api.scalardb.contactPoints | quote }}
             - name: SCALAR_DB_CONTACT_PORT
               value: {{ .Values.api.scalardb.contactPort | quote }}
+            {{- if .Values.api.scalardb.username }}
             - name: SCALARDB__USERNAME
-              value: {{ .Values.api.scalardb.username | quote }}
+              valueFrom:
+                secretKeyRef:
+                  key: SCALARDB__USERNAME
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
             {{- if .Values.api.scalardb.password }}
             - name: SCALARDB__PASSWORD
               valueFrom:
