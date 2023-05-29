@@ -48,7 +48,10 @@ api:
     namespace: scalarflow
     contactPoint: "scalardb-server-envoy"
     contactPort: 60051
+    username: ""
+    password: ""
     storage: grpc
+    # If you are not using ScalarDB server, you can leave this value to be empty to use the default consensus commit transaction manager
     transactionManager: grpc
 
   app:
