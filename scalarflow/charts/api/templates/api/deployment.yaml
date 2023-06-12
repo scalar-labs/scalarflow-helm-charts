@@ -42,6 +42,27 @@ spec:
           env:
             - name: SPRING__SECURITY__OAUTH2__RESOURCESERVER__JWT__ISSUER_URI
               value: {{ .Values.api.spring.security.oauth2.resourceServer.jwt.issuerUri | quote }}
+            {{- if .Values.api.spring.datasource.url }}
+            - name: SPRING__DATASOURCE__URL
+              valueFrom:
+                secretKeyRef:
+                  key: SPRING__DATASOURCE__URL
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.api.spring.datasource.username }}
+            - name: SPRING__DATASOURCE__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: SPRING__DATASOURCE__USERNAME
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.api.spring.datasource.password }}
+            - name: SPRING__DATASOURCE__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SPRING__DATASOURCE__PASSWORD
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
             - name: SERVER__PORT
               value: {{ .Values.api.server.port | quote }}
             {{- if .Values.api.scalardb.configData }}
