@@ -3,10 +3,13 @@ name: Release Charts
 on:
   push:
     branches:
-      - '**'
+      - 'main'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
 
 jobs:
-  release:
+  release-scalarflow-charts:
     runs-on: ubuntu-latest
 
     steps:
