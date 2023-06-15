@@ -12,10 +12,6 @@ This directory contains the following helm charts.
 
 * Helm 3.5+
 
-## Supported Kubernetes versions
-
-* 1.25.x, 1.24.x, 1.23.x, 1.22.x, 1.21.x
-
 ## Usage
 
 ### Helm
