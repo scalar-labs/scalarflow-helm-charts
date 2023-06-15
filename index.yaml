@@ -1,0 +1,25 @@
+apiVersion: v1
+entries:
+  scalarflow-api:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-06-15T08:20:52.173871306Z"
+    description: A Helm chart for ScalarFlow API
+    digest: a67f8c4294a92c93218cc0d4134c72e5cdbd2753a974cb5d846b21d3c6802310
+    name: scalarflow-api
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-api-0.1.0/scalarflow-api-0.1.0.tgz
+    version: 0.1.0
+  scalarflow-web:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-06-15T08:20:52.35143155Z"
+    description: A Helm chart for ScalarFlow Web
+    digest: 6556be399d4405de5038f8ece9a66c3091c118be82d8bac71c91c9b76f7d70f3
+    name: scalarflow-web
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-web-0.1.0/scalarflow-web-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-06-15T08:20:52.35144335Z"
