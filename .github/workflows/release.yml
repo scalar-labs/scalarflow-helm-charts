@@ -2,8 +2,6 @@ name: Release Charts
 
 on:
   push:
-    branches:
-      - 'main'
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
       - '[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
@@ -32,4 +30,5 @@ jobs:
           charts_dir: scalarflow/charts
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CR_SKIP_EXISTING: true
 
