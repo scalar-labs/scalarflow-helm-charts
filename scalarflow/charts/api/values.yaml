@@ -50,7 +50,7 @@ api:
     configData: ""
     # In the case the properties file is not used, then the configuration can be done via bellow configs
     namespace: scalarflow
-    contactPoint: "scalardb-server-envoy"
+    contactPoints: "scalardb-server-envoy"
     contactPort: 60051
     username: ""
     password: ""
