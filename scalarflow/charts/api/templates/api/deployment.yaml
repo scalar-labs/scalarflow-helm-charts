@@ -72,7 +72,7 @@ spec:
             - name: SCALARDB__NAMESPACE
               value: {{ .Values.api.scalardb.namespace | quote }}
             - name: SCALARDB__CONTACT_POINTS
-              value: {{ .Values.api.scalardb.contactPoints | quote }}
+              value: {{ .Values.api.scalardb.contactPoint | quote }}
             - name: SCALARDB__CONTACT_PORT
               value: {{ .Values.api.scalardb.contactPort | quote }}
             {{- if .Values.api.scalardb.username }}
@@ -163,26 +163,60 @@ spec:
             {{- end }}
             - name: STORAGE__BOX__ENTERPRISE_ID
               value: {{ .Values.api.storage.box.enterpriseId | quote }}
-            - name: STORAGE__JCLOUDS__ENABLED
-              value: {{ .Values.api.storage.jclouds.enabled | quote }}
-            - name: STORAGE__JCLOUDS__CONTAINER
-              value: {{ .Values.api.storage.jclouds.container | quote }}
-            {{- if .Values.api.storage.jclouds.identity }}
-            - name: STORAGE__JCLOUDS__IDENTITY
+            - name: STORAGE__AWS_S3__ENABLED
+              value: {{ .Values.api.storage.awsS3.enabled | quote }}
+            {{- if .Values.api.storage.awsS3.accessKeyId }}
+            - name: STORAGE__AWS_S3__ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  key: STORAGE__JCLOUDS__IDENTITY
+                  key: STORAGE__AWS_S3__ACCESS_KEY_ID
                   name: {{ .Chart.Name }}-secret
             {{- end }}
-            {{- if .Values.api.storage.jclouds.credential }}
-            - name: STORAGE__JCLOUDS__CREDENTIAL
+            {{- if .Values.api.storage.awsS3.secretAccessKey }}
+            - name: STORAGE__AWS_S3__SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  key: STORAGE__JCLOUDS__CREDENTIAL
+                  key: STORAGE__AWS_S3__SECRET_ACCESS_KEY
                   name: {{ .Chart.Name }}-secret
             {{- end }}
-            - name: STORAGE__JCLOUDS__PROVIDER
-              value: {{ .Values.api.storage.jclouds.provider | quote }}
+            - name: STORAGE__AWS_S3__BUCKET_NAME
+              value: {{ .Values.api.storage.awsS3.bucketName | quote }}
+            - name: STORAGE__GCS__ENABLED
+              value: {{ .Values.api.storage.gcs.enabled | quote }}
+            {{- if .Values.api.storage.gcs.serviceAccountName }}
+            - name: STORAGE__GCS__SERVICE_ACCOUNT_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__GCS__SERVICE_ACCOUNT_NAME
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.api.storage.gcs.serviceAccountPrivateKey }}
+            - name: STORAGE__GCS_SERVICE_ACCOUNT_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__GCS_SERVICE_ACCOUNT_PRIVATE_KEY
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: STORAGE__GCS__BUCKET_NAME
+              value: {{ .Values.api.storage.gcs.bucketName | quote }}
+            - name: STORAGE__AZURE_BLOB__ENABLED
+              value: {{ .Values.api.storage.azureBlob.enabled | quote }}
+            {{- if .Values.api.storage.azureBlob.storageAccountName }}
+            - name: STORAGE__AZURE_BLOB__STORAGE_ACCOUNT_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__AZURE_BLOB__STORAGE_ACCOUNT_NAME
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.api.storage.azureBlob.storageAccountKey }}
+            - name: STORAGE__AZURE_BLOB_STORAGE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: STORAGE__AZURE_BLOB_STORAGE_ACCOUNT_KEY
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: STORAGE__AZURE_BLOB__CONTAINER_NAME
+              value: {{ .Values.api.storage.azureBlob.containerName | quote }}
             - name: SPRINGDOC__DOCUMENTATION__ENABLED
               value: {{ .Values.api.springdoc.documentation.enabled | quote }}
             - name: SMS__TWILIO__ENABLED

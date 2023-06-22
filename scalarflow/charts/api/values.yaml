@@ -92,12 +92,21 @@ api:
       privateKey: ""
       passphrase: ""
       enterpriseId: ""
-    jclouds:
+    awsS3:
       enabled: false
-      container: ""
-      identity: ""
-      credential: ""
-      provider: AWS
+      accessKeyId: ""
+      secretAccessKey: ""
+      bucketName: ""
+    gcs:
+      enabled: false
+      serviceAccountName: ""
+      serviceAccountPrivateKey: ""
+      bucketName: ""
+    azureBlob:
+      enabled: false
+      storageAccountName: ""
+      storageAccountKey: ""
+      containerName: ""
 
   springdoc:
     documentation:
