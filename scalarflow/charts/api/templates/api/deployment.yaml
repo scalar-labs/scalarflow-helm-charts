@@ -287,6 +287,22 @@ spec:
               value: {{ .Values.api.email.templates.mfa.textBody | quote }}
             - name: EMAIL__TEMPLATES__MFA__HTML_BODY
               value: {{ .Values.api.email.templates.mfa.htmlBody | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__SUBJECT
+              value: {{ .Values.api.email.templates.workflowCompleted.subject | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__TEMPLATE_ID
+              value: {{ .Values.api.email.templates.workflowCompleted.templateId | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__TEXT_BODY
+              value: {{ .Values.api.email.templates.workflowCompleted.textBody | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__HTML_BODY
+              value: {{ .Values.api.email.templates.workflowCompleted.htmlBody | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__SUBJECT
+              value: {{ .Values.api.email.templates.workflowRejected.subject | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__TEMPLATE_ID
+              value: {{ .Values.api.email.templates.workflowRejected.templateId | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__TEXT_BODY
+              value: {{ .Values.api.email.templates.workflowRejected.textBody | quote }}
+            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__HTML_BODY
+              value: {{ .Values.api.email.templates.workflowRejected.htmlBody | quote }}
             {{- if .Values.api.crypto.keyPair.privateKey }}
             - name: CRYPTO__KEY_PAIR__PRIVATE_KEY
               valueFrom:
