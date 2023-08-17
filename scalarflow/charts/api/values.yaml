@@ -154,6 +154,16 @@ api:
         templateId: ""
         textBody: ""
         htmlBody: ""
+      workflowCompleted:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""
+      workflowRejected:
+        subject: ""
+        templateId: ""
+        textBody: ""
+        htmlBody: ""   
 
   crypto:
     keyPair:
