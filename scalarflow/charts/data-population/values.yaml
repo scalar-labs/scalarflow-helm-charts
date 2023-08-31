@@ -1,0 +1,74 @@
+# Default values for data-population.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+dataPopulation:
+  image:
+    repository: ghcr.io/scalar-labs/scalarflow-data-population
+    pullPolicy: IfNotPresent
+    tag: 1.0.0
+  # This will clean the data population job after the job is finished (either completed or failed) after a set number of seconds. "0" means disable this feature (the job is not cleaned).
+  ttlSecondsAfterFinished: 60
+  # Arguments for the scalarflow data population
+  args: []
+  
+  scalardb:
+    config: scalardb.properties
+    configData: ""
+    # In the case the properties file is not used, then the configuration can be done via bellow configs
+    namespace: scalarflow
+    contactPoints: "scalardb-server-envoy"
+    contactPort: 60051
+    username: ""
+    password: ""
+    storage: grpc
+    # If you are not using ScalarDB server, you can leave this value to be empty to use the default consensus commit transaction manager
+    transactionManager: grpc
+
+  configMouthPath: /scalarflow
+
+imagePullSecrets:
+  - name: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
