@@ -5,6 +5,7 @@
 
 This directory contains the following helm charts.
 * [ScalarFlow API](./scalarflow/charts/api/)
+* [ScalarFlow Data Population](./scalarflow/charts/data-population/)
 * [ScalarFlow Web](./scalarflow/charts/web/)
 
 
