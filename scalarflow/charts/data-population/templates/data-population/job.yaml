@@ -24,7 +24,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "scalarflow-data-population.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       restartPolicy: Never
@@ -39,6 +38,8 @@ spec:
             - name: CONFIG_FILE
               value: "{{ .Values.dataPopulation.configMouthPath }}/{{ .Values.dataPopulation.scalardb.config }}"
             {{- end }}
+            - name: SCALARDB__NAMESPACE
+              value: {{ .Values.dataPopulation.scalardb.namespace | quote }}
             - name: SCALAR_DB_CONTACT_POINTS
               value: {{ .Values.dataPopulation.scalardb.contactPoints | quote }}
             - name: SCALAR_DB_CONTACT_PORT
