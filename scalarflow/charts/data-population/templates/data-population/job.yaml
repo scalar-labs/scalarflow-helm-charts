@@ -1,0 +1,94 @@
+# Check if arguments are provided or not, if not then the job will not be executed
+{{- if len .Values.dataPopulation.args }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "scalarflow-data-population.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "scalarflow-data-population.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.dataPopulation.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ .Values.dataPopulation.ttlSecondsAfterFinished }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "scalarflow-data-population.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}-data-population-container
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dataPopulation.image.repository }}:{{ .Values.dataPopulation.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.dataPopulation.image.pullPolicy }}
+          env:
+            {{- if .Values.dataPopulation.scalardb.configData }}
+            - name: CONFIG_FILE
+              value: "{{ .Values.dataPopulation.configMouthPath }}/{{ .Values.dataPopulation.scalardb.config }}"
+            {{- end }}
+            - name: SCALARDB__NAMESPACE
+              value: {{ .Values.dataPopulation.scalardb.namespace | quote }}
+            - name: SCALAR_DB_CONTACT_POINTS
+              value: {{ .Values.dataPopulation.scalardb.contactPoints | quote }}
+            - name: SCALAR_DB_CONTACT_PORT
+              value: {{ .Values.dataPopulation.scalardb.contactPort | quote }}
+            {{- if .Values.dataPopulation.scalardb.username }}
+            - name: SCALARDB__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: SCALARDB__USERNAME
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            {{- if .Values.dataPopulation.scalardb.password }}
+            - name: SCALARDB__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SCALARDB__PASSWORD
+                  name: {{ .Chart.Name }}-secret
+            {{- end }}
+            - name: SCALAR_DB_STORAGE
+              value: {{ .Values.dataPopulation.scalardb.storage | quote }}
+            - name: SCALAR_DB_TRANSACTION_MANAGER
+              value: {{ .Values.dataPopulation.scalardb.transactionManager | quote }}
+          volumeMounts:
+            {{- if .Values.dataPopulation.scalardb.configData }}
+            - name: {{ .Chart.Name }}-secret-volume
+              mountPath: {{ .Values.dataPopulation.configMouthPath }}
+            {{- end }}
+          {{- if .Values.dataPopulation.args }}
+          args:
+          {{- range .Values.dataPopulation.args }}
+            - {{ . }}
+          {{- end }}
+          {{- end }}
+      volumes:
+        {{- if .Values.dataPopulation.scalardb.configData }}
+        - name: {{ .Chart.Name }}-secret-volume
+          secret:
+            secretName: {{ .Chart.Name }}-secret
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
