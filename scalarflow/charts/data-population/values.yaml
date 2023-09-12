@@ -24,6 +24,10 @@ dataPopulation:
     storage: grpc
     # If you are not using ScalarDB server, you can leave this value to be empty to use the default consensus commit transaction manager
     transactionManager: grpc
+  
+  app:
+    company:
+      id: ""
 
   configMouthPath: /scalarflow
 

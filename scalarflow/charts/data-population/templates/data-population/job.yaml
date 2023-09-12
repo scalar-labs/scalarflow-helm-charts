@@ -35,14 +35,14 @@ spec:
           imagePullPolicy: {{ .Values.dataPopulation.image.pullPolicy }}
           env:
             {{- if .Values.dataPopulation.scalardb.configData }}
-            - name: CONFIG_FILE
+            - name: SCALARDB__CONFIG
               value: "{{ .Values.dataPopulation.configMouthPath }}/{{ .Values.dataPopulation.scalardb.config }}"
             {{- end }}
             - name: SCALARDB__NAMESPACE
               value: {{ .Values.dataPopulation.scalardb.namespace | quote }}
-            - name: SCALAR_DB_CONTACT_POINTS
+            - name: SCALARDB__CONTACT_POINTS
               value: {{ .Values.dataPopulation.scalardb.contactPoints | quote }}
-            - name: SCALAR_DB_CONTACT_PORT
+            - name: SCALARDB_CONTACT_PORT
               value: {{ .Values.dataPopulation.scalardb.contactPort | quote }}
             {{- if .Values.dataPopulation.scalardb.username }}
             - name: SCALARDB__USERNAME
@@ -58,10 +58,12 @@ spec:
                   key: SCALARDB__PASSWORD
                   name: {{ .Chart.Name }}-secret
             {{- end }}
-            - name: SCALAR_DB_STORAGE
+            - name: SCALARDB_STORAGE
               value: {{ .Values.dataPopulation.scalardb.storage | quote }}
-            - name: SCALAR_DB_TRANSACTION_MANAGER
+            - name: SCALARDB_TRANSACTION_MANAGER
               value: {{ .Values.dataPopulation.scalardb.transactionManager | quote }}
+            - name: APP__COMPANY_ID
+              value: {{ .Values.dataPopulation.app.company.id | quote }}
           volumeMounts:
             {{- if .Values.dataPopulation.scalardb.configData }}
             - name: {{ .Chart.Name }}-secret-volume
