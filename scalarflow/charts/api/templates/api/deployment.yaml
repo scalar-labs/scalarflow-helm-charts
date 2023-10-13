@@ -40,8 +40,6 @@ spec:
               containerPort: {{ .Values.api.server.port }}
               protocol: TCP
           env:
-            - name: SPRING__SECURITY__OAUTH2__RESOURCESERVER__JWT__ISSUER_URI
-              value: {{ .Values.api.spring.security.oauth2.resourceServer.jwt.issuerUri | quote }}
             {{- if .Values.api.spring.datasource.url }}
             - name: SPRING__DATASOURCE__URL
               valueFrom:
@@ -320,28 +318,6 @@ spec:
               value: {{ .Values.api.p2p.messageExpirationInSecs | quote }}
             - name: AUTHENTICATION__PROVIDERS__STATIC_JWT__ENABLED
               value: {{ .Values.api.authentication.providers.staticJwt.enabled | quote }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__ENABLED
-              value: {{ .Values.api.authentication.providers.awsCognito.enabled | quote }}
-            {{- if .Values.api.authentication.providers.awsCognito.accessKey }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: AUTHENTICATION__PROVIDERS__AWS_COGNITO__ACCESS_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.authentication.providers.awsCognito.secretKey }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: AUTHENTICATION__PROVIDERS__AWS_COGNITO__SECRET_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__REGION
-              value: {{ .Values.api.authentication.providers.awsCognito.region | quote }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_ID
-              value: {{ .Values.api.authentication.providers.awsCognito.userPoolId | quote }}
-            - name: AUTHENTICATION__PROVIDERS__AWS_COGNITO__USER_POOL_CLIENT_ID
-              value: {{ .Values.api.authentication.providers.awsCognito.clientId | quote }}
             - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__ENABLED
               value: {{ .Values.api.authentication.providers.oauth2.google.enabled | quote }}
             - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__AUTH_URI

@@ -32,11 +32,6 @@ api:
     data: ""
 
   spring:
-    security:
-      oauth2:
-        resourceServer:
-          jwt:
-            issuerUri: ""
     datasource:
       url: ""
       username: ""
@@ -179,13 +174,6 @@ api:
     providers:
       staticJwt:
         enabled: false
-      awsCognito:
-        enabled: false
-        accessKey: ""
-        secretKey: ""
-        region: "ap-northeast-1"
-        userPoolId: ""
-        clientId: ""
       oauth2:
         google:
           enabled: false
