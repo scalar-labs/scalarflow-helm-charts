@@ -57,7 +57,7 @@ imagePullSecrets:
   - name: regcred
 
 serviceAccount:
-  # -- Specify an existing service account name. If not specified, a new service account will be created.
+  # -- Specify an existing service account name. If empty, the default service account in the namespace will be used.
   serviceAccountName: ""
   # -- Whether to automount the service account token.
   automountServiceAccountToken: false

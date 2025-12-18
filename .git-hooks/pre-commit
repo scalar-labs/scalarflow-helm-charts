@@ -8,7 +8,6 @@
 set -e
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-CHARTS_DIR="$REPO_ROOT/scalarflow/charts"
 
 # Check if helm schema plugin is installed
 if ! helm plugin list | grep -q "schema"; then
@@ -32,11 +31,7 @@ for values_file in $STAGED_VALUES; do
         chart_name=$(basename "$chart_dir")
         echo "  → $chart_name"
 
-        cd "$REPO_ROOT/$chart_dir"
-        helm schema -f values.yaml -o values.schema.json --draft 2020 --indent 2
-
-        # Stage the generated schema
-        git add values.schema.json
+        (cd "$REPO_ROOT/$chart_dir" && helm schema -f values.yaml -o values.schema.json --draft 2020 --indent 2 && git add values.schema.json)
     fi
 done
 
