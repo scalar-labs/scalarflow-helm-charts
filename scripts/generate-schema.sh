@@ -2,8 +2,9 @@
 #
 # Generate values.schema.json for all Helm charts
 #
-# Requires: helm plugin install https://github.com/losisin/helm-values-schema-json.git
-# Setup hooks: git config core.hooksPath .git-hooks
+# Setup:
+#   1. Install plugin: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1
+#   2. Enable hooks: git config core.hooksPath .git-hooks
 #
 
 set -e
@@ -13,8 +14,11 @@ CHARTS_DIR="$REPO_ROOT/scalarflow/charts"
 
 # Check plugin
 if ! helm plugin list | grep -q "schema"; then
-    echo "Installing helm-values-schema-json plugin..."
-    helm plugin install https://github.com/losisin/helm-values-schema-json.git
+    echo "ERROR: helm-values-schema-json plugin not installed."
+    echo ""
+    echo "Install with:"
+    echo "  helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1"
+    exit 1
 fi
 
 echo "Generating schemas..."

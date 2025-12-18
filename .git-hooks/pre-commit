@@ -2,7 +2,9 @@
 #
 # Pre-commit hook: Generate values.schema.json for modified charts
 #
-# Setup: git config core.hooksPath .git-hooks
+# Setup:
+#   1. Install plugin: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1
+#   2. Enable hooks: git config core.hooksPath .git-hooks
 #
 
 set -e
@@ -11,8 +13,11 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 # Check if helm schema plugin is installed
 if ! helm plugin list | grep -q "schema"; then
-    echo "Installing helm-values-schema-json plugin..."
-    helm plugin install https://github.com/losisin/helm-values-schema-json.git
+    echo "ERROR: helm-values-schema-json plugin not installed."
+    echo ""
+    echo "Install with:"
+    echo "  helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1"
+    exit 1
 fi
 
 # Get staged values.yaml files
