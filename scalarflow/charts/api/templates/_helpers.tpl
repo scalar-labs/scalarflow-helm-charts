@@ -82,12 +82,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}-schema-loader
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Base name for container naming
 */}}
-{{- define "scalarflow-api.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "scalarflow-api.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
+{{- define "scalarflow.baseName" -}}
+scalarflow
 {{- end }}

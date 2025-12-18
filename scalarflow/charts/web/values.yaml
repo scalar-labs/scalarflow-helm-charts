@@ -1,4 +1,4 @@
-# Default values for scalarflow.
+# Default values for scalarflow-web.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,75 +7,89 @@ web:
   image:
     repository: ghcr.io/scalar-labs/scalarflow-web
     pullPolicy: IfNotPresent
-    tag: 1.0.0
-
-  port: 9005
-
-  scalarflowApiUrl: http://scalarflow-api-service:8080
+    tag: ""
 
   service:
+    # -- Service type.
     type: ClusterIP
-    port: 9005
+    # -- Service port.
+    port: 3000
+    # -- Container target port.
+    targetPort: 3000
+    # -- Protocol for the service.
+    protocol: TCP
+    # -- Service annotations.
+    annotations: {}
+
+  # Environment variables (native Kubernetes env array syntax)
+  env:
+    - name: NEXT_PUBLIC_SCALARFLOW_API_URL
+      value: "https://api.scalarflow.example.com"
+    - name: NEXT_PUBLIC_SCALARFLOW_ADMIN_EMAIL
+      value: "admin@scalarflow.example.com"
+
+  # PodSecurityContext holds pod-level security attributes and common container settings.
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  # SecurityContext holds security configuration that will be applied to a container.
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+
+  # Health check path for liveness and readiness probes
+  healthCheckPath: "/"
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 imagePullSecrets:
   - name: regcred
 
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  # -- Specify an existing service account name. If not specified, a new service account will be created.
+  serviceAccountName: ""
+  # -- Whether to automount the service account token.
+  automountServiceAccountToken: false
 
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+# Ingress configuration
+# Supports any Kubernetes-compliant ingress controller (nginx, kong, traefik, etc.)
 ingress:
-  enabled: true
+  enabled: false
+  # Set to your ingress controller class: nginx, kong, traefik, alb, etc.
   className: ""
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  # Controller-specific annotations examples:
+  # nginx:
+  #   nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  # kong:
+  #   konghq.com/strip-path: "false"
+  #   konghq.com/protocols: "https"
+  #   konghq.com/plugins: "rate-limiting"
+  # traefik:
+  #   traefik.ingress.kubernetes.io/router.tls: "true"
+  # aws-alb:
+  #   alb.ingress.kubernetes.io/scheme: internet-facing
+  #   alb.ingress.kubernetes.io/target-type: ip
+  annotations: {}
   hosts:
     - host: ""
       paths:
         - path: /
           pathType: Prefix
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

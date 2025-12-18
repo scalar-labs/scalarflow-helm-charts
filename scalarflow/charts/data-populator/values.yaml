@@ -1,0 +1,64 @@
+# Default values for data-populator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+dataPopulator:
+  image:
+    repository: ghcr.io/scalar-labs/scalarflow-data-populator
+    pullPolicy: IfNotPresent
+    tag: ""
+  # This will clean the data populator job after the job is finished (either completed or failed) after a set number of seconds. "0" means disable this feature (the job is not cleaned).
+  ttlSecondsAfterFinished: 60
+  # Arguments for the scalarflow data populator
+  args: []
+
+  # Environment variables (native Kubernetes env array syntax)
+  env:
+    - name: API_URL
+      value: "http://scalarflow-api:8080"
+    - name: ADMIN_EMAIL
+      value: "admin@scalarflow.example.com"
+    - name: ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: admin-password
+    - name: SCENARIO
+      value: "test-data"
+    - name: MAX_RETRIES
+      value: "30"
+    - name: RETRY_DELAY
+      value: "2"
+
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Pod security context
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  # Container security context
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+
+imagePullSecrets:
+  - name: regcred
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
