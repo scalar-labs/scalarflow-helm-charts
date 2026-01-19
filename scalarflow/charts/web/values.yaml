@@ -64,32 +64,31 @@ serviceAccount:
 
 podAnnotations: {}
 
-# Ingress configuration
-# Supports any Kubernetes-compliant ingress controller (nginx, kong, traefik, etc.)
-ingress:
+# HTTPRoute configuration (Kubernetes Gateway API)
+# Requires a Gateway resource to be deployed in the cluster
+# See: https://gateway-api.sigs.k8s.io/
+httpRoute:
   enabled: false
-  # Set to your ingress controller class: nginx, kong, traefik, alb, etc.
-  className: ""
-  # Controller-specific annotations examples:
-  # nginx:
-  #   nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-  #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  # kong:
-  #   konghq.com/strip-path: "false"
-  #   konghq.com/protocols: "https"
-  #   konghq.com/plugins: "rate-limiting"
-  # traefik:
-  #   traefik.ingress.kubernetes.io/router.tls: "true"
-  # aws-alb:
-  #   alb.ingress.kubernetes.io/scheme: internet-facing
-  #   alb.ingress.kubernetes.io/target-type: ip
+  # Annotations for the HTTPRoute
   annotations: {}
-  hosts:
-    - host: ""
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
+  # Reference to the parent Gateway(s)
+  # The Gateway must exist and allow routes from this namespace
+  parentRefs:
+    - name: scalarflow-gateway
+      # namespace: gateway-namespace  # Optional: specify if Gateway is in different namespace
+      # sectionName: https            # Optional: specific listener name
+  # Hostnames to match (required for host-based routing)
+  hostnames:
+    - scalarflow.example.com
+  # Routing rules (optional - defaults to route all traffic to service)
+  # rules:
+  #   - matches:
+  #       - path:
+  #           type: PathPrefix
+  #           value: /
+  #     backendRefs:
+  #       - name: web
+  #         port: 3000
 
 nodeSelector: {}
 

@@ -5,6 +5,34 @@
     "affinity": {
       "type": "object"
     },
+    "httpRoute": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
     "imagePullSecrets": {
       "type": "array",
       "items": {
@@ -13,48 +41,6 @@
           "name": {
             "type": "string"
           }
-        }
-      }
-    },
-    "ingress": {
-      "type": "object",
-      "properties": {
-        "annotations": {
-          "type": "object"
-        },
-        "className": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "hosts": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "host": {
-                "type": "string"
-              },
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "path": {
-                      "type": "string"
-                    },
-                    "pathType": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tls": {
-          "type": "array"
         }
       }
     },

@@ -1,0 +1,77 @@
+{{- if .Values.httpRoute.enabled -}}
+{{- $fullName := include "scalarflow-web.fullname" . -}}
+{{- $svcName := .Chart.Name -}}
+{{- $svcPort := .Values.web.service.port -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "scalarflow-web.labels" . | nindent 4 }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.httpRoute.parentRefs }}
+  parentRefs:
+    {{- range .Values.httpRoute.parentRefs }}
+    - name: {{ .name }}
+      {{- if .namespace }}
+      namespace: {{ .namespace }}
+      {{- end }}
+      {{- if .sectionName }}
+      sectionName: {{ .sectionName }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.httpRoute.hostnames }}
+  hostnames:
+    {{- range .Values.httpRoute.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- if .Values.httpRoute.rules }}
+    {{- range .Values.httpRoute.rules }}
+    - matches:
+        {{- range .matches }}
+        - path:
+            type: {{ .path.type | default "PathPrefix" }}
+            value: {{ .path.value | default "/" }}
+          {{- if .headers }}
+          headers:
+            {{- toYaml .headers | nindent 12 }}
+          {{- end }}
+          {{- if .queryParams }}
+          queryParams:
+            {{- toYaml .queryParams | nindent 12 }}
+          {{- end }}
+          {{- if .method }}
+          method: {{ .method }}
+          {{- end }}
+        {{- end }}
+      {{- if .filters }}
+      filters:
+        {{- toYaml .filters | nindent 8 }}
+      {{- end }}
+      backendRefs:
+        {{- if .backendRefs }}
+        {{- toYaml .backendRefs | nindent 8 }}
+        {{- else }}
+        - name: {{ $svcName }}
+          port: {{ $svcPort }}
+        {{- end }}
+    {{- end }}
+    {{- else }}
+    # Default rule: route all traffic to the service
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ $svcName }}
+          port: {{ $svcPort }}
+    {{- end }}
+{{- end }}
