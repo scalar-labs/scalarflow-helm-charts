@@ -2,7 +2,7 @@ apiVersion: v2
 name: scalarflow-data-populator
 description: A Helm chart for ScalarFlow Data Populator - Database initialization job
 type: application
-version: "0.3.0"
+version: "0.1.0"
 appVersion: "SNAPSHOT"
 kubeVersion: ">=1.19.0-0"
 home: https://github.com/scalar-labs/scalarflow-helm-charts
