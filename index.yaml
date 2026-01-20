@@ -1,3 +1,49 @@
 apiVersion: v1
-entries: {}
-generated: "2026-01-20T16:00:00Z"
+entries:
+  scalarflow-api:
+  - apiVersion: v2
+    appVersion: SNAPSHOT
+    created: "2026-01-20T07:04:54.114852801Z"
+    description: A Helm chart for ScalarFlow API - Backend REST API service
+    digest: f8ee4484d5699cdfbc964d3e52dc8e8e313bf856b415ae6097369be77a3a5025
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-api
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-api-0.1.0/scalarflow-api-0.1.0.tgz
+    version: 0.1.0
+  scalarflow-data-populator:
+  - apiVersion: v2
+    appVersion: SNAPSHOT
+    created: "2026-01-20T07:04:54.266901961Z"
+    description: A Helm chart for ScalarFlow Data Populator - Database initialization
+      job
+    digest: c0427d1ad987c30aa2553625971d4c55fcc3806a9377688a0ba1904a1065a50e
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-data-populator
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-data-populator-0.1.0/scalarflow-data-populator-0.1.0.tgz
+    version: 0.1.0
+  scalarflow-web:
+  - apiVersion: v2
+    appVersion: SNAPSHOT
+    created: "2026-01-20T07:04:54.392160973Z"
+    description: A Helm chart for ScalarFlow Web - Frontend web application
+    digest: 0dee4597e03320a7963dbf5d23bc700924d65e45da1eecd6a20060387876a34a
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-web
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-web-0.1.0/scalarflow-web-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-01-20T07:04:54.392166924Z"
