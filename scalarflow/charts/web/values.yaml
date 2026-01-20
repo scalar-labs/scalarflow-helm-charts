@@ -1,4 +1,4 @@
-# Default values for scalarflow.
+# Default values for scalarflow-web.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,75 +7,88 @@ web:
   image:
     repository: ghcr.io/scalar-labs/scalarflow-web
     pullPolicy: IfNotPresent
-    tag: 1.0.0
-
-  port: 9005
-
-  scalarflowApiUrl: http://scalarflow-api-service:8080
+    tag: ""
 
   service:
+    # -- Service type.
     type: ClusterIP
-    port: 9005
+    # -- Service port.
+    port: 3000
+    # -- Container target port.
+    targetPort: 3000
+    # -- Protocol for the service.
+    protocol: TCP
+    # -- Service annotations.
+    annotations: {}
+
+  # Environment variables (native Kubernetes env array syntax)
+  env:
+    - name: NEXT_PUBLIC_SCALARFLOW_API_URL
+      value: "https://api.scalarflow.example.com"
+    - name: NEXT_PUBLIC_SCALARFLOW_ADMIN_EMAIL
+      value: "admin@scalarflow.example.com"
+
+  # PodSecurityContext holds pod-level security attributes and common container settings.
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  # SecurityContext holds security configuration that will be applied to a container.
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+
+  # Health check path for liveness and readiness probes
+  healthCheckPath: "/"
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 imagePullSecrets:
   - name: regcred
 
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  # -- Specify an existing service account name. If empty, the default service account in the namespace will be used.
+  serviceAccountName: ""
+  # -- Whether to automount the service account token.
+  automountServiceAccountToken: false
 
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-ingress:
-  enabled: true
-  className: ""
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ""
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
+# HTTPRoute configuration (Kubernetes Gateway API)
+# Requires a Gateway resource to be deployed in the cluster
+# See: https://gateway-api.sigs.k8s.io/
+httpRoute:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  # Annotations for the HTTPRoute
+  annotations: {}
+  # Reference to the parent Gateway(s)
+  # The Gateway must exist and allow routes from this namespace
+  parentRefs:
+    - name: scalarflow-gateway
+      # namespace: gateway-namespace  # Optional: specify if Gateway is in different namespace
+      # sectionName: https            # Optional: specific listener name
+  # Hostnames to match (required for host-based routing)
+  hostnames:
+    - scalarflow.example.com
+  # Routing rules (optional - defaults to route all traffic to service)
+  # rules:
+  #   - matches:
+  #       - path:
+  #           type: PathPrefix
+  #           value: /
+  #     backendRefs:
+  #       - name: web
+  #         port: 3000
 
 nodeSelector: {}
 

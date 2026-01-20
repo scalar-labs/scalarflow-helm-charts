@@ -1,4 +1,4 @@
-# Default values for scalarflow.
+# Default values for scalarflow-api.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,278 +7,163 @@ api:
   image:
     repository: ghcr.io/scalar-labs/scalarflow-api
     pullPolicy: IfNotPresent
-    tag: 1.0.0
-
-  schemaLoader:
-    image:
-      repository: ghcr.io/scalar-labs/scalarflow-schema-loader
-      pullPolicy: IfNotPresent
-      tag: 1.0.0
-    # This will clean the schema loader job after the job is finished (either completed or failed) after a set number of seconds. "0" means disable this feature (the job is not cleaned).
-    ttlSecondsAfterFinished: 60
-    # Arguments for the scalarflow schema loader
-    args: []
-
-  configMouthPath: /scalarflow
-  springBootProfile: production
+    tag: ""
 
   service:
+    # -- Service type.
     type: ClusterIP
+    # -- Service port.
     port: 8080
+    # -- Container target port.
+    targetPort: 8080
+    # -- Protocol for the service.
+    protocol: TCP
+    # -- Service annotations.
+    annotations: {}
 
-  springBootConfig:
-    name: application.yml
-    # file data which will be passed via --set-file flag when install the chart
-    data: ""
+  # Environment variables
+  env:
+    # -- Spring Datasource (ScalarDB)
+    - name: SPRING__DATASOURCE__SCALARDB__HOST
+      value: "scalardb-cluster"
+    # -- Authentication
+    - name: AUTHENTICATION__STATIC_JWT__SECRET
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: jwt-secret
+    # -- OAuth2 Google Provider
+    - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__ENABLED
+      value: "false"
+    - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__REDIRECT_URI
+      value: "https://scalarflow.example.com/oauth2/callback"
+    - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_ID
+      value: ""
+    - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: google-oauth2-client-secret
+    # -- App
+    - name: APP__URL
+      value: "https://scalarflow.example.com"
+    # -- Email (SendGrid)
+    - name: EMAIL__FROM
+      value: "no-reply@scalarflow.example.com"
+    - name: EMAIL__PROVIDER
+      value: "SENDGRID"
+    - name: EMAIL__SENDGRID__API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: sendgrid-api-key
+    # -- Rollbar
+    - name: ROLLBAR_ENABLED
+      value: "false"
+    - name: ROLLBAR_ACCESS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: rollbar-access-token
+    - name: ROLLBAR_ENVIRONMENT
+      value: "production"
+    - name: ROLLBAR_CODE_VERSION
+      value: ""
+    # Admin user
+    - name: APP__INITIAL_ADMIN_USER__ENABLED
+      value: "false"
+    - name: APP__INITIAL_ADMIN_USER__EMAIL
+      value: "admin@scalarflow.example.com"
+    - name: APP__INITIAL_ADMIN_USER__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: scalarflow-api-secret
+          key: admin-password
+    - name: APP__INITIAL_ADMIN_USER__NAME
+      value: "ScalarFlow Admin"
 
-  spring:
-    datasource:
-      url: ""
-      username: ""
-      password: ""
+  # PodSecurityContext holds pod-level security attributes and common container settings.
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
 
-  server:
-    port: 8080
+  # SecurityContext holds security configuration that will be applied to a container.
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
 
-  scalardb:
-    config: scalardb.properties
-    configData: ""
-    # In the case the properties file is not used, then the configuration can be done via bellow configs
-    namespace: scalarflow
-    contactPoints: "scalardb-server-envoy"
-    contactPort: 60051
-    username: ""
-    password: ""
-    storage: grpc
-    # If you are not using ScalarDB server, you can leave this value to be empty to use the default consensus commit transaction manager
-    transactionManager: grpc
+  # Resource limits
+  resources:
+    requests:
+      cpu: 500m
+      memory: 768Mi
+    limits:
+      cpu: 1500m
+      memory: 1536Mi
 
-  app:
-    storage:
-      templateRootFolderId: ""
-      workflowRootFolderId: ""
-      workareaRootFolderId: ""
-    url: ""
-    company:
-      id: ""
-      name: ""
-      description: ""
-    selfSignUp:
-      enabled: false
-      defaultPermissions: ""
-    templatePath: /scalarflow/templates/
-    adminUser:
-      email: ""
-      password: ""
-      firstName: "ScalarFlow"
-      lastName: "Admin"
-      phoneNumber: ""
-
-  storage:
-    box:
-      enabled: false
-      config: box-config.json
-      configData: ""
-      groupId: ""
-      # In the case the config file is not used, please using bellow configs
-      clientId: ""
-      clientSecret: ""
-      publicKeyId: ""
-      privateKey: ""
-      passphrase: ""
-      enterpriseId: ""
-    jclouds:
-      enabled: false
-      container: ""
-      identity: ""
-      credential: ""
-      provider: AWS
-
-  springdoc:
-    documentation:
-      enabled: false
-
-  sms:
-    twilio:
-      enabled: false
-      accountSid: ""
-      token: ""
-      phoneNumber: ""
-    awsSns:
-      enabled: false
-      accessKey: ""
-      secretKey: ""
-      region: "ap-northeast-1"
-    templates:
-      mfa:
-        body: ""
-
-  email:
-    from: ""
-    sendgrid:
-      enabled: false
-      apiKey: ""
-    awsSes:
-      enabled: false
-      accessKey: ""
-      secretKey: ""
-      region: "ap-northeast-1"
-    templates:
-      externalUserAccessRequest:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      externalUserAccessTask:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      verificationCode:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      createdUser:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      mfa:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      workflowCompleted:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""
-      workflowRejected:
-        subject: ""
-        templateId: ""
-        textBody: ""
-        htmlBody: ""   
-
-  crypto:
-    keyPair:
-      privateKey: ""
-      publicKey: ""
-
-  p2p:
-    enabled: false
-    thisPeerHost: ""
-    messageExpirationInSecs: 60
-
-  authentication:
-    providers:
-      staticJwt:
-        enabled: false
-      oauth2:
-        google:
-          enabled: false
-          authUri: ""
-          redirectUri: ""
-          clientId: ""
-          clientSecret: ""
-        box:
-          enabled: false
-          authUri: ""
-          redirectUri: ""
-          clientId: ""
-          clientSecret: ""
-    mfa:
-      required: false
-      email:
-        enabled: false
-      sms:
-        enabled: false
-    password:
-      minCharacterLength: 8
-      numberRequired: true
-      upperCaseRequired: true
-      lowerCaseRequired: true
-      specialCharacterRequired: false
-    staticJwt:
-      secret: ""
-      expirationTimeMinutes: 60
-      issuerUri: ""
-      refreshTokenExpirationDays: 30
-    security:
-      forgotPasswordAttemptLimit: 3
-      forgotPasswordRetryMinutes: 5
-      failedAuthenticationAttemptLimit: 5
-      failedAuthenticationRetryMinutes: 5
-    verificationCode:
-      verificationCodeLength: 6
-      verificationCodeExpirationInMinutes: 5
-
-  sentry:
-    dsn: ""
-    debug: false
-    tracesSampleRate: 1.0
-    environment: "production"
-    release: ""
+# Schema Loader configuration
+schemaLoader:
+  image:
+    repository: ghcr.io/scalar-labs/scalarflow-schema-loader
+    pullPolicy: IfNotPresent
+    tag: ""
+  # This will clean the schema loader job after the job is finished
+  ttlSecondsAfterFinished: 60
+  # Arguments for the scalarflow schema loader
+  args: []
+  # Environment variables (native Kubernetes env array syntax)
+  env:
+    - name: SCALARDB_SQL_CONTACT_POINTS
+      value: "indirect:scalardb-cluster-envoy"
+  # Security context for schema loader (may need elevated permissions)
+  podSecurityContext: {}
+  securityContext: {}
 
 imagePullSecrets:
   - name: regcred
 
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  # -- Specify an existing service account name. If empty, the default service account in the namespace will be used.
+  serviceAccountName: ""
+  # -- Whether to automount the service account token.
+  automountServiceAccountToken: false
 
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-ingress:
+# HTTPRoute configuration (Kubernetes Gateway API)
+# Requires a Gateway resource to be deployed in the cluster
+# See: https://gateway-api.sigs.k8s.io/
+httpRoute:
   enabled: false
-  className: ""
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ""
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  # Annotations for the HTTPRoute
+  annotations: {}
+  # Reference to the parent Gateway(s)
+  # The Gateway must exist and allow routes from this namespace
+  parentRefs:
+    - name: scalarflow-gateway
+      # namespace: gateway-namespace  # Optional: specify if Gateway is in different namespace
+      # sectionName: https            # Optional: specific listener name
+  # Hostnames to match (required for host-based routing)
+  hostnames:
+    - api.scalarflow.example.com
+  # Routing rules (optional - defaults to route all traffic to service)
+  # rules:
+  #   - matches:
+  #       - path:
+  #           type: PathPrefix
+  #           value: /v1
+  #     backendRefs:
+  #       - name: api
+  #         port: 8080
+  #     filters:
+  #       - type: RequestHeaderModifier
+  #         requestHeaderModifier:
+  #           add:
+  #             - name: X-Custom-Header
+  #               value: custom-value
 
 nodeSelector: {}
 

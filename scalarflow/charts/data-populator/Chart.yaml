@@ -1,6 +1,6 @@
 apiVersion: v2
-name: scalarflow-web
-description: A Helm chart for ScalarFlow Web - Frontend web application
+name: scalarflow-data-populator
+description: A Helm chart for ScalarFlow Data Populator - Database initialization job
 type: application
 version: "0.3.0"
 appVersion: "SNAPSHOT"

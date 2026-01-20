@@ -6,9 +6,7 @@ metadata:
   labels:
     {{- include "scalarflow-web.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.web.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "scalarflow-web.selectorLabels" . | nindent 6 }}
@@ -25,26 +23,44 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "scalarflow-web.serviceAccountName" . }}
+      {{- if .Values.serviceAccount.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-container
+        - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag | default "latest" }}"
+            {{- toYaml .Values.web.securityContext | nindent 12 }}
+          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.web.image.pullPolicy }}
           ports:
             - name: web-port
-              containerPort: {{ .Values.web.port }}
-              protocol: TCP
+              containerPort: {{ .Values.web.service.targetPort }}
+              protocol: {{ .Values.web.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.web.healthCheckPath | default "/" }}
+              port: {{ .Values.web.service.targetPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.web.healthCheckPath | default "/" }}
+              port: {{ .Values.web.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- with .Values.web.env }}
           env:
-          - name: SCALARFLOW_WEB_SERVER_PORT
-            value: {{ .Values.web.port | quote }}
-          - name: SCALARFLOW_API_URL
-            value: {{ .Values.web.scalarflowApiUrl | quote }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.web.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -6,19 +6,16 @@ metadata:
   labels:
     {{- include "scalarflow-api.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.api.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "scalarflow-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/api/secret.yaml") . | sha256sum }}
-        {{- if .Values.podAnnotations }}
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "scalarflow-api.selectorLabels" . | nindent 8 }}
     spec:
@@ -26,415 +23,44 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "scalarflow-api.serviceAccountName" . }}
+      {{- if .Values.serviceAccount.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.api.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-container
+        - name: {{ include "scalarflow.baseName" . }}-api
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default "latest" }}"
+            {{- toYaml .Values.api.securityContext | nindent 12 }}
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - name: api-port
-              containerPort: {{ .Values.api.server.port }}
-              protocol: TCP
+              containerPort: {{ .Values.api.service.targetPort }}
+              protocol: {{ .Values.api.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: {{ .Values.api.service.targetPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: {{ .Values.api.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- with .Values.api.env }}
           env:
-            {{- if .Values.api.spring.datasource.url }}
-            - name: SPRING__DATASOURCE__URL
-              valueFrom:
-                secretKeyRef:
-                  key: SPRING__DATASOURCE__URL
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.spring.datasource.username }}
-            - name: SPRING__DATASOURCE__USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: SPRING__DATASOURCE__USERNAME
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.spring.datasource.password }}
-            - name: SPRING__DATASOURCE__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: SPRING__DATASOURCE__PASSWORD
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: SERVER__PORT
-              value: {{ .Values.api.server.port | quote }}
-            {{- if .Values.api.scalardb.configData }}
-            - name: SCALARDB__CONFIG
-              value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
-            {{- end }}
-            - name: SCALARDB__NAMESPACE
-              value: {{ .Values.api.scalardb.namespace | quote }}
-            - name: SCALARDB__CONTACT_POINTS
-              value: {{ .Values.api.scalardb.contactPoints | quote }}
-            - name: SCALARDB__CONTACT_PORT
-              value: {{ .Values.api.scalardb.contactPort | quote }}
-            {{- if .Values.api.scalardb.username }}
-            - name: SCALARDB__USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: SCALARDB__USERNAME
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.scalardb.password }}
-            - name: SCALARDB__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: SCALARDB__PASSWORD
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: SCALARDB__STORAGE
-              value: {{ .Values.api.scalardb.storage | quote }}
-            - name: SCALARDB__TRANSACTION_MANANGER
-              value: {{ .Values.api.scalardb.transactionManager | quote }}
-            - name: APP__STORAGE__TEMPLATE_ROOT_FOLDER_ID
-              value: {{ .Values.api.app.storage.templateRootFolderId | quote }}
-            - name: APP__STORAGE__WORKFLOW_ROOT_FOLDER_ID
-              value: {{ .Values.api.app.storage.workflowRootFolderId | quote }}
-            - name: APP__STORAGE__WORKAREA_ROOT_FOLDER_ID
-              value: {{ .Values.api.app.storage.workareaRootFolderId | quote }}
-            - name: APP__URL
-              value: {{ .Values.api.app.url | quote }}
-            - name: APP__COMPANY_ID
-              value: {{ .Values.api.app.company.id | quote }}
-            - name: APP__COMPANY_NAME
-              value: {{ .Values.api.app.company.name | quote }}
-            - name: APP__COMPANY_DESCRIPTION
-              value: {{ .Values.api.app.company.description | quote }}
-            - name: APP__SELF_SIGN_UP__ENABLED
-              value: {{ .Values.api.app.selfSignUp.enabled | quote }}
-            - name: APP__SELF_SIGN_UP__DEFAULT_PERMISSIONS
-              value: {{ .Values.api.app.selfSignUp.defaultPermissions | quote }}
-            - name: APP__TEMPLATE_PATH
-              value: {{ .Values.api.app.templatePath | quote }}
-            - name: APP__ADMIN_USER__EMAIL
-              value: {{ .Values.api.app.adminUser.email | quote }}
-            {{- if .Values.api.app.adminUser.password }}
-            - name: APP__ADMIN_USER__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: APP__ADMIN_USER__PASSWORD
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: APP__ADMIN_USER__FIRST_NAME
-              value: {{ .Values.api.app.adminUser.firstName | quote }}
-            - name: APP__ADMIN_USER__LAST_NAME
-              value: {{ .Values.api.app.adminUser.lastName | quote }}
-            - name: APP__ADMIN_USER__PHONE_NUMBER
-              value: {{ .Values.api.app.adminUser.phoneNumber | quote }}
-            - name: STORAGE__BOX__ENABLED
-              value: {{ .Values.api.storage.box.enabled | quote }}
-            {{- if .Values.api.storage.box.configData }}
-            - name: STORAGE__BOX__CONFIG
-              value: "{{ .Values.api.configMouthPath }}/{{ .Values.api.storage.box.config }}"
-            {{- end }}
-            - name: STORAGE__BOX__GROUP_ID
-              value: {{ .Values.api.storage.box.groupId | quote }}
-            - name: STORAGE__BOX__CLIENT_ID
-              value: {{ .Values.api.storage.box.clientId | quote }}
-            {{- if .Values.api.storage.box.clientSecret }}
-            - name: STORAGE__BOX__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: STORAGE__BOX__CLIENT_SECRET
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: STORAGE__BOX__PUBLIC_KEY_ID
-              value: {{ .Values.api.storage.box.publicKeyId | quote }}
-            {{- if .Values.api.storage.box.privateKey }}
-            - name: STORAGE__BOX__PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: STORAGE__BOX__PRIVATE_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.storage.box.passphrase }}
-            - name: STORAGE__BOX__PASSPHRASE
-              valueFrom:
-                secretKeyRef:
-                  key: STORAGE__BOX__PASSPHRASE
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: STORAGE__BOX__ENTERPRISE_ID
-              value: {{ .Values.api.storage.box.enterpriseId | quote }}
-            - name: STORAGE__JCLOUDS__ENABLED
-              value: {{ .Values.api.storage.jclouds.enabled | quote }}
-            - name: STORAGE__JCLOUDS__CONTAINER
-              value: {{ .Values.api.storage.jclouds.container | quote }}
-            {{- if .Values.api.storage.jclouds.identity }}
-            - name: STORAGE__JCLOUDS__IDENTITY
-              valueFrom:
-                secretKeyRef:
-                  key: STORAGE__JCLOUDS__IDENTITY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.storage.jclouds.credential }}
-            - name: STORAGE__JCLOUDS__CREDENTIAL
-              valueFrom:
-                secretKeyRef:
-                  key: STORAGE__JCLOUDS__CREDENTIAL
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: STORAGE__JCLOUDS__PROVIDER
-              value: {{ .Values.api.storage.jclouds.provider | quote }}
-            - name: SPRINGDOC__DOCUMENTATION__ENABLED
-              value: {{ .Values.api.springdoc.documentation.enabled | quote }}
-            - name: SMS__TWILIO__ENABLED
-              value: {{ .Values.api.sms.twilio.enabled | quote }}
-            - name: SMS__TWILIO__ACCOUNT_SID
-              value: {{ .Values.api.sms.twilio.accountSid | quote }}
-            {{- if .Values.api.sms.twilio.token }}
-            - name: SMS__TWILIO__TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: SMS__TWILIO__TOKEN
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: SMS__TWILIO__PHONE_NUMBER
-              value: {{ .Values.api.sms.twilio.phoneNumber | quote }}
-            - name: SMS__AWS_SNS__ENABLED
-              value: {{ .Values.api.sms.awsSns.enabled | quote }}
-            {{- if .Values.api.sms.awsSns.accessKey }}
-            - name: SMS__AWS_SNS__ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: SMS__AWS_SNS__ACCESS_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.sms.awsSns.secretKey }}
-            - name: SMS__AWS_SNS__SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: SMS__AWS_SNS__SECRET_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: SMS__AWS_SNS__REGION
-              value: {{ .Values.api.sms.awsSns.region | quote }}
-            - name: SMS__TEMPLATES__MFA__BODY
-              value: {{ .Values.api.sms.templates.mfa.body | quote }}
-            - name: EMAIL__FROM
-              value: {{ .Values.api.email.from | quote }}
-            - name: EMAIL__SENDGRID__ENABLED
-              value: {{ .Values.api.email.sendgrid.enabled | quote }}
-            {{- if .Values.api.email.sendgrid.apiKey }}
-            - name: EMAIL__SENDGRID__API_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: EMAIL__SENDGRID__API_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: EMAIL__AWS_SES__ENABLED
-              value: {{ .Values.api.email.awsSes.enabled | quote }}
-            {{- if .Values.api.email.awsSes.accessKey }}
-            - name: EMAIL__AWS_SES__ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: EMAIL__AWS_SES__ACCESS_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            {{- if .Values.api.email.awsSes.secretKey }}
-            - name: EMAIL__AWS_SES__SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: EMAIL__AWS_SES__SECRET_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: EMAIL__AWS_SES__REGION
-              value: {{ .Values.api.email.awsSes.region | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__SUBJECT
-              value: {{ .Values.api.email.templates.externalUserAccessRequest.subject | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.externalUserAccessRequest.templateId | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__TEXT_BODY
-              value: {{ .Values.api.email.templates.externalUserAccessRequest.textBody | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_REQUEST__HTML_BODY
-              value: {{ .Values.api.email.templates.externalUserAccessRequest.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__SUBJECT
-              value: {{ .Values.api.email.templates.externalUserAccessTask.subject | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.externalUserAccessTask.templateId | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__TEXT_BODY
-              value: {{ .Values.api.email.templates.externalUserAccessTask.textBody | quote }}
-            - name: EMAIL__TEMPLATES__EXTERNAL_USER_ACCESS_TASK__HTML_BODY
-              value: {{ .Values.api.email.templates.externalUserAccessTask.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__VERIFICATION_CODE__SUBJECT
-              value: {{ .Values.api.email.templates.verificationCode.subject | quote }}
-            - name: EMAIL__TEMPLATES__VERIFICATION_CODE__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.verificationCode.templateId | quote }}
-            - name: EMAIL__TEMPLATES__VERIFICATION_CODE__TEXT_BODY
-              value: {{ .Values.api.email.templates.verificationCode.textBody | quote }}
-            - name: EMAIL__TEMPLATES__VERIFICATION_CODE__HTML_BODY
-              value: {{ .Values.api.email.templates.verificationCode.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__CREATED_USER__SUBJECT
-              value: {{ .Values.api.email.templates.createdUser.subject | quote }}
-            - name: EMAIL__TEMPLATES__CREATED_USER__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.createdUser.templateId | quote }}
-            - name: EMAIL__TEMPLATES__CREATED_USER__TEXT_BODY
-              value: {{ .Values.api.email.templates.createdUser.textBody | quote }}
-            - name: EMAIL__TEMPLATES__CREATED_USER__HTML_BODY
-              value: {{ .Values.api.email.templates.createdUser.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__MFA__SUBJECT
-              value: {{ .Values.api.email.templates.mfa.subject | quote }}
-            - name: EMAIL__TEMPLATES__MFA__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.mfa.templateId | quote }}
-            - name: EMAIL__TEMPLATES__MFA__TEXT_BODY
-              value: {{ .Values.api.email.templates.mfa.textBody | quote }}
-            - name: EMAIL__TEMPLATES__MFA__HTML_BODY
-              value: {{ .Values.api.email.templates.mfa.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__SUBJECT
-              value: {{ .Values.api.email.templates.workflowCompleted.subject | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.workflowCompleted.templateId | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__TEXT_BODY
-              value: {{ .Values.api.email.templates.workflowCompleted.textBody | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_COMPLETED__HTML_BODY
-              value: {{ .Values.api.email.templates.workflowCompleted.htmlBody | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__SUBJECT
-              value: {{ .Values.api.email.templates.workflowRejected.subject | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__TEMPLATE_ID
-              value: {{ .Values.api.email.templates.workflowRejected.templateId | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__TEXT_BODY
-              value: {{ .Values.api.email.templates.workflowRejected.textBody | quote }}
-            - name: EMAIL__TEMPLATES__WORKFLOW_REJECTED__HTML_BODY
-              value: {{ .Values.api.email.templates.workflowRejected.htmlBody | quote }}
-            {{- if .Values.api.crypto.keyPair.privateKey }}
-            - name: CRYPTO__KEY_PAIR__PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: CRYPTO__KEY_PAIR__PRIVATE_KEY
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: CRYPTO__KEY_PAIR__PUBLIC_KEY
-              value: {{ .Values.api.crypto.keyPair.publicKey | quote }}
-            - name: P2P__ENABLED
-              value: {{ .Values.api.p2p.enabled | quote }}
-            - name: P2P__THIS_PEER_HOST
-              value: {{ .Values.api.p2p.thisPeerHost | quote }}
-            - name: P2P__MESSAGE_EXPIRATION_IN_SECS
-              value: {{ .Values.api.p2p.messageExpirationInSecs | quote }}
-            - name: AUTHENTICATION__PROVIDERS__STATIC_JWT__ENABLED
-              value: {{ .Values.api.authentication.providers.staticJwt.enabled | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__ENABLED
-              value: {{ .Values.api.authentication.providers.oauth2.google.enabled | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__AUTH_URI
-              value: {{ .Values.api.authentication.providers.oauth2.google.authUri | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__REDIRECT_URI
-              value: {{ .Values.api.authentication.providers.oauth2.google.redirectUri | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_ID
-              value: {{ .Values.api.authentication.providers.oauth2.google.clientId | quote }}
-            {{- if .Values.api.authentication.providers.oauth2.google.clientSecret }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: AUTHENTICATION__PROVIDERS__OAUTH2__GOOGLE__CLIENT_SECRET
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__ENABLED
-              value: {{ .Values.api.authentication.providers.oauth2.box.enabled | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__AUTH_URI
-              value: {{ .Values.api.authentication.providers.oauth2.box.authUri | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__REDIRECT_URI
-              value: {{ .Values.api.authentication.providers.oauth2.box.redirectUri | quote }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_ID
-              value: {{ .Values.api.authentication.providers.oauth2.box.clientId | quote }}
-            {{- if .Values.api.authentication.providers.oauth2.box.clientSecret }}
-            - name: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: AUTHENTICATION__PROVIDERS__OAUTH2__BOX__CLIENT_SECRET
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: AUTHENTICATION__MFA__REQUIRED
-              value: {{ .Values.api.authentication.mfa.required | quote }}
-            - name: AUTHENTICATION__MFA__EMAIL__ENABLED
-              value: {{ .Values.api.authentication.mfa.email.enabled | quote }}
-            - name: AUTHENTICATION__MFA__SMS__ENABLED
-              value: {{ .Values.api.authentication.mfa.sms.enabled | quote }}
-            - name: AUTHENTICATION__PASSWORD__MIN_CHARACTER_LENGTH
-              value: {{ .Values.api.authentication.password.minCharacterLength | quote }}
-            - name: AUTHENTICATION__PASSWORD__NUMBER_REQUIRED
-              value: {{ .Values.api.authentication.password.numberRequired | quote }}
-            - name: AUTHENTICATION__PASSWORD__UPPER_CASE_REQUIRED
-              value: {{ .Values.api.authentication.password.upperCaseRequired | quote }}
-            - name: AUTHENTICATION__PASSWORD__LOWER_CASE_REQUIRED
-              value: {{ .Values.api.authentication.password.lowerCaseRequired | quote }}
-            - name: AUTHENTICATION__PASSWORD__SPECIAL_CHARACTER_REQUIRED
-              value: {{ .Values.api.authentication.password.specialCharacterRequired | quote }}
-            {{- if .Values.api.authentication.staticJwt.secret }}
-            - name: AUTHENTICATION__STATIC_JWT__SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: AUTHENTICATION__STATIC_JWT__SECRET
-                  name: {{ .Chart.Name }}-secret
-            {{- end }}
-            - name: AUTHENTICATION__STATIC_JWT__EXPIRATION_TIME_MINUTES
-              value: {{ .Values.api.authentication.staticJwt.expirationTimeMinutes | quote }}
-            - name: AUTHENTICATION__STATIC_JWT__ISSUER_URI
-              value: {{ .Values.api.authentication.staticJwt.issuerUri | quote }}
-            - name: AUTHENTICATION__STATIC_JWT__REFRESH_TOKEN_EXPIRATION_DAYS
-              value: {{ .Values.api.authentication.staticJwt.refreshTokenExpirationDays | quote }}
-            - name: AUTHENTICATION__SECURITY__FORGOT_PASSWORD_ATTEMPT_LIMIT
-              value: {{ .Values.api.authentication.security.forgotPasswordAttemptLimit | quote }}
-            - name: AUTHENTICATION__SECURITY__FORGOT_PASSWORD_RETRY_MINUTES
-              value: {{ .Values.api.authentication.security.forgotPasswordRetryMinutes | quote }}
-            - name: AUTHENTICATION__SECURITY__FAILED_AUTHENTICATION_ATTEMPT_LIMIT
-              value: {{ .Values.api.authentication.security.failedAuthenticationAttemptLimit | quote }}
-            - name: AUTHENTICATION__SECURITY__FAILED_AUTHENTICATION_RETRY_MINUTES
-              value: {{ .Values.api.authentication.security.failedAuthenticationRetryMinutes | quote }}
-            - name: AUTHENTICATION__VERIFICATION_CODE__VERIFICATION_CODE_LENGTH
-              value: {{ .Values.api.authentication.verificationCode.verificationCodeLength | quote }}
-            - name: AUTHENTICATION__VERIFICATION_CODE__VERIFICATION_CODE_EXPIRATION_IN_MINUTES
-              value: {{ .Values.api.authentication.verificationCode.verificationCodeExpirationInMinutes | quote }}
-            - name: SENTRY__DSN
-              value: {{ .Values.api.sentry.dsn | quote }}
-            - name: SENTRY__DEBUG
-              value:  {{ .Values.api.sentry.debug | quote }}
-            - name: SENTRY__TRACES_SAMPLE_RATE
-              value: {{ .Values.api.sentry.tracesSampleRate | quote }}
-            - name: SENTRY__ENVIRONMENT
-              value: {{ .Values.api.sentry.environment | quote }}
-            - name: SENTRY__RELEASE
-              value: {{ .Values.api.sentry.release | quote }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-
-          volumeMounts:
-          {{- if .Values.api.springBootConfig.data }}
-          - name: {{ .Chart.Name }}-secret-volume
-            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.springBootConfig.name }}"
-            subPath: {{ .Values.api.springBootConfig.name }}
-          {{- end }}
-          {{- if .Values.api.storage.box.configData }}
-          - name: {{ .Chart.Name }}-secret-volume
-            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.storage.box.config }}"
-            subPath: {{ .Values.api.storage.box.config }}
-          {{- end }}
-          {{- if .Values.api.scalardb.configData }}
-          - name: {{ .Chart.Name }}-secret-volume
-            mountPath: "{{ .Values.api.configMouthPath }}/{{ .Values.api.scalardb.config }}"
-            subPath: {{ .Values.api.scalardb.config }}
-          {{- end }}
-      volumes:
-        - name: {{ .Chart.Name }}-secret-volume
-          secret:
-            secretName: {{ .Chart.Name }}-secret
-            items:
-            {{- if .Values.api.springBootConfig.data }}
-            - key: {{ .Values.api.springBootConfig.name }}
-              path:  {{ .Values.api.springBootConfig.name }}
-            {{- end }}
-            {{- if .Values.api.storage.box.configData }}
-            - key: {{ .Values.api.storage.box.config }}
-              path:  {{ .Values.api.storage.box.config }}
-            {{- end }}
-            {{- if .Values.api.scalardb.configData }}
-            - key: {{ .Values.api.scalardb.config }}
-              path:  {{ .Values.api.scalardb.config }}
-            {{- end }}
+            {{- toYaml .Values.api.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

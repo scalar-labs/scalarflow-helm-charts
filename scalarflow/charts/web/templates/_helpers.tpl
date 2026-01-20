@@ -50,13 +50,3 @@ app.kubernetes.io/name: {{ include "scalarflow-web.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "scalarflow-web.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "scalarflow-web.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}

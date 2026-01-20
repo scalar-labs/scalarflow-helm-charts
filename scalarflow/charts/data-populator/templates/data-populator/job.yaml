@@ -1,51 +1,55 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "scalarflow-schema-loader.fullname" . }}
+  name: {{ include "scalarflow-data-populator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "scalarflow-schema-loader.labels" . | nindent 4 }}
+    {{- include "scalarflow-data-populator.labels" . | nindent 4 }}
   annotations:
     # Helm hooks for one-time job execution
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
-  {{- if .Values.schemaLoader.ttlSecondsAfterFinished }}
-  ttlSecondsAfterFinished: {{ .Values.schemaLoader.ttlSecondsAfterFinished }}
+  {{- if .Values.dataPopulator.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ .Values.dataPopulator.ttlSecondsAfterFinished }}
   {{- end }}
   template:
     metadata:
       annotations:
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "scalarflow-schema-loader.selectorLabels" . | nindent 8 }}
+        {{- include "scalarflow-data-populator.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.schemaLoader.podSecurityContext }}
+      {{- with .Values.dataPopulator.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Never
       containers:
-        - name: {{ include "scalarflow.baseName" . }}-schema-loader
-          {{- with .Values.schemaLoader.securityContext }}
+        - name: {{ .Chart.Name }}
+          {{- with .Values.dataPopulator.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.schemaLoader.image.repository }}:{{ .Values.schemaLoader.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.schemaLoader.image.pullPolicy }}
-          {{- with .Values.schemaLoader.env }}
+          image: "{{ .Values.dataPopulator.image.repository }}:{{ .Values.dataPopulator.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.dataPopulator.image.pullPolicy }}
+          {{- with .Values.dataPopulator.env }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.schemaLoader.args }}
+          {{- with .Values.dataPopulator.args }}
           args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.dataPopulator.resources }}
+          resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- with .Values.nodeSelector }}
