@@ -106,6 +106,7 @@ api:
 
 # Schema Loader configuration
 schemaLoader:
+  # -- Whether to enable the schema loader Job.
   enabled: true
   image:
     repository: ghcr.io/scalar-labs/scalarflow-schema-loader
