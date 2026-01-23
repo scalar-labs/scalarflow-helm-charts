@@ -3,6 +3,20 @@ entries:
   scalarflow-api:
   - apiVersion: v2
     appVersion: SNAPSHOT
+    created: "2026-01-23T06:56:42.099552162Z"
+    description: A Helm chart for ScalarFlow API - Backend REST API service
+    digest: 48dd12400886d20a99154b959860c8b33435213b599440cb5226634ec5cff0cb
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-api
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-api-0.2.0/scalarflow-api-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: SNAPSHOT
     created: "2026-01-20T07:04:54.114852801Z"
     description: A Helm chart for ScalarFlow API - Backend REST API service
     digest: f8ee4484d5699cdfbc964d3e52dc8e8e313bf856b415ae6097369be77a3a5025
@@ -16,6 +30,21 @@ entries:
     - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-api-0.1.0/scalarflow-api-0.1.0.tgz
     version: 0.1.0
   scalarflow-data-populator:
+  - apiVersion: v2
+    appVersion: SNAPSHOT
+    created: "2026-01-23T06:56:42.25616734Z"
+    description: A Helm chart for ScalarFlow Data Populator - Database initialization
+      job
+    digest: 30f7b84b5e0da49886a87cab13be906541d7354fc1a6c5bc4ae2f5b9ee86e60b
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-data-populator
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-data-populator-0.2.0/scalarflow-data-populator-0.2.0.tgz
+    version: 0.2.0
   - apiVersion: v2
     appVersion: SNAPSHOT
     created: "2026-01-20T07:04:54.266901961Z"
@@ -34,6 +63,20 @@ entries:
   scalarflow-web:
   - apiVersion: v2
     appVersion: SNAPSHOT
+    created: "2026-01-23T06:56:42.399448234Z"
+    description: A Helm chart for ScalarFlow Web - Frontend web application
+    digest: 3de31d7482cb50b099ffd394e949df05826b47c9a9adb6a3d49f1f37f53089ea
+    home: https://github.com/scalar-labs/scalarflow-helm-charts
+    kubeVersion: '>=1.19.0-0'
+    name: scalarflow-web
+    sources:
+    - https://github.com/scalar-labs/scalarflow-helm-charts
+    type: application
+    urls:
+    - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-web-0.2.0/scalarflow-web-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: SNAPSHOT
     created: "2026-01-20T07:04:54.392160973Z"
     description: A Helm chart for ScalarFlow Web - Frontend web application
     digest: 0dee4597e03320a7963dbf5d23bc700924d65e45da1eecd6a20060387876a34a
@@ -46,4 +89,4 @@ entries:
     urls:
     - https://github.com/scalar-labs/scalarflow-helm-charts/releases/download/scalarflow-web-0.1.0/scalarflow-web-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-20T07:04:54.392166924Z"
+generated: "2026-01-23T06:56:42.399480204Z"
