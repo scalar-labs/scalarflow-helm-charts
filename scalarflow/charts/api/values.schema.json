@@ -190,6 +190,9 @@
         "args": {
           "type": "array"
         },
+        "enabled": {
+          "type": "boolean"
+        },
         "env": {
           "type": "array",
           "items": {
